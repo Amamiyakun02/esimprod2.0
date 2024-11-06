@@ -1,71 +1,138 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
-use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use App\Models\Barang;
+use App\Models\Peminjaman;
+// use App\Models\Barang;
 
 class PeminjamanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $data = [
-            'title' => 'Peminjaman',
-            'peminjaman' => Peminjaman::simplePaginate(10),
+        $borrowedItems = session()->get('borrowed_items', []);
+        return view('user.peminjaman.index', compact('borrowedItems'));
+    }
+
+    public function scanBarcode(Request $request)
+    {
+        $barcode = $request->barcode;
+        
+        // Find item by barcode
+        $item = Barang::where('kode_barang', $barcode)->first();
+        
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found'
+            ], 404);
+        }
+        
+        // Check if item is available
+        if (!$item->is_available) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item is not available for borrowing'
+            ], 400);
+        }
+        
+        // Get current borrowed items from session
+        $borrowedItems = session()->get('borrowed_items', []);
+        
+        // Check if item is already in the list
+        if (isset($borrowedItems[$item->id])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item already in borrowing list'
+            ], 400);
+        }
+        
+        // Add item to session
+        $borrowedItems[$item->id] = [
+            'id' => $item->id,
+            'name' => $item->name,
+            'brand' => $item->brand,
+            'serial_number' => $item->serial_number
         ];
-
-        return view('admin.peminjaman.index', $data);
+        
+        session()->put('borrowed_items', $borrowedItems);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Item added successfully',
+            'item' => $borrowedItems[$item->id]
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function removeItem($itemId)
     {
-        //
+        $borrowedItems = session()->get('borrowed_items', []);
+        
+        if (isset($borrowedItems[$itemId])) {
+            unset($borrowedItems[$itemId]);
+            session()->put('borrowed_items', $borrowedItems);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed successfully'
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Item not found in borrowing list'
+        ], 404);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // public function saveBorrowing(Request $request)
+    // {
+    //     $borrowedItems = session()->get('borrowed_items', []);
+        
+    //     if (empty($borrowedItems)) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No items to borrow'
+    //         ], 400);
+    //     }
+        
+    //     try {
+    //         \DB::beginTransaction();
+            
+    //         // Create borrowing record
+    //         $borrowing = Peminjaman::create([
+    //             'user_id' => auth()->id(),
+    //             'assignment_letter' => $request->assignment_letter,
+    //             'borrow_date' => now(),
+    //             'status' => 'borrowed'
+    //         ]);
+            
+    //         // Create borrowing details
+    //         foreach ($borrowedItems as $item) {
+    //             BorrowingDetail::create([
+    //                 'borrowing_id' => $borrowing->id,
+    //                 'item_id' => $item['id']
+    //             ]);
+                
+    //             // Update item availability
+    //             Item::where('id', $item['id'])->update(['is_available' => false]);
+    //         }
+            
+    //         // Clear session
+    //         session()->forget('borrowed_items');
+            
+    //         \DB::commit();
+            
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Borrowing saved successfully'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         \DB::rollback();
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error saving borrowing: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 }

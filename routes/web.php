@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\CreditController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -49,4 +48,7 @@ Route::prefix('perawatan')->group(function () {
 
 Route::prefix('peminjaman')->group(function () {
     Route::get('/', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::post('/scan', [PeminjamanController::class, 'scanBarcode'])->name('peminjaman.scan');
+    Route::delete('/remove/{itemId}', [PeminjamanController::class, 'removeItem'])->name('peminjaman.remove');
+    Route::post('/save', [PeminjamanController::class, 'saveBorrowing'])->name('peminjaman.save');
 });
