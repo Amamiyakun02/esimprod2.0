@@ -31,7 +31,7 @@ class BarangSeeder extends Seeder
 
         Barang::create([
             'uuid' => Str::random(12),
-            'kode_barang' => 'B6A8IX20P13h',
+            'kode_barang' => 'B6A8IX20P13H',
             'nama_barang' => 'Nikon D800E',
             'jenis_barang_id' => 'JBR-001',
             'status' => 'Tersedia',
