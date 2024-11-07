@@ -305,9 +305,9 @@ document.addEventListener('DOMContentLoaded', function() {
       .then(data => {
           if (data.success) {
               addItemToTable(data.item);
-              showAlert('success', data.message);
+              showAlert('success', data.message, data.code);
           } else {
-              showAlert('error', data.message);
+              showAlert('error', data.message, data.code);
           }
       })
       .catch(error => {

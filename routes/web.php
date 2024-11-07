@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PerawatanController;
 use App\Http\Controllers\Admin\JenisBarangController;
 use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\User\PeminjamanController as PeminjamanUser;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -47,8 +48,11 @@ Route::prefix('perawatan')->group(function () {
 });
 
 Route::prefix('peminjaman')->group(function () {
-    Route::get('/', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-    Route::post('/scan', [PeminjamanController::class, 'scanBarcode'])->name('peminjaman.scan');
-    Route::delete('/remove/{itemId}', [PeminjamanController::class, 'removeItem'])->name('peminjaman.remove');
-    Route::post('/save', [PeminjamanController::class, 'saveBorrowing'])->name('peminjaman.save');
+    Route::get('/', [PeminjamanUser::class, 'index'])->name('user.peminjaman.index');
+    Route::post('/scan', [PeminjamanUser::class, 'scanBarcode'])->name('user.peminjaman.scan');
+    Route::delete('/remove/{itemId}', [PeminjamanUser::class, 'removeItem'])->name('user.peminjaman.remove');
+    Route::post('/save', [PeminjamanUser::class, 'saveBorrowing'])->name('user.peminjaman.save');
 });
+
+
+Route::get('/ddffd', [PeminjamanUser::class, 'index'])->name('peminjaman.index');

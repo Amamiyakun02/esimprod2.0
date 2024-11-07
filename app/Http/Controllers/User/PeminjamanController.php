@@ -17,47 +17,53 @@ class PeminjamanController extends Controller
     
     public function scanBarcode(Request $request)
     {
+        // Validasi inputapplication
+        $request->validate([
+            'barcode' => 'required|string'
+        ]);
+
         $barcode = $request->barcode;
-        
-        // Find item by barcode
+
+        // Cari item berdasarkan barcode
         $item = Barang::where('kode_barang', $barcode)->first();
-        
+
         if (!$item) {
             return response()->json([
                 'success' => false,
-                'message' => 'Item not found'
+                'message' => 'Item not found',
+                'code' => $barcode
             ], 404);
         }
-        
-        // Check if item is available
+
+        // Periksa apakah item tersedia
         if (!$item->is_available) {
             return response()->json([
                 'success' => false,
                 'message' => 'Item is not available for borrowing'
             ], 400);
         }
-        
-        // Get current borrowed items from session
+
+        // Ambil daftar item yang dipinjam dari sesi
         $borrowedItems = session()->get('borrowed_items', []);
-        
-        // Check if item is already in the list
+
+        // Periksa apakah item sudah ada dalam daftar pinjaman
         if (isset($borrowedItems[$item->id])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Item already in borrowing list'
             ], 400);
         }
-        
-        // Add item to session
+
+        // Tambahkan item ke sesi
         $borrowedItems[$item->id] = [
             'id' => $item->id,
             'name' => $item->name,
             'brand' => $item->brand,
             'serial_number' => $item->serial_number
         ];
-        
+
         session()->put('borrowed_items', $borrowedItems);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Item added successfully',
