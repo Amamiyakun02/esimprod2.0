@@ -10,7 +10,9 @@ class PeminjamanController extends Controller
     public function index()
     {
         $borrowedItems = session()->get('borrowed_items', []);
+    
         return view('user.peminjaman.index', compact('borrowedItems'));
+        // return "Hello World";
     }
 
     public function scan(Request $request)
@@ -100,6 +102,7 @@ class PeminjamanController extends Controller
             'count' => count($stack)
         ]);
     }
+
     protected function findItemByBarcode(string $barcode)
     {
         return Barang::where('kode_barang', $barcode)->first(); // Replace with your logic
