@@ -77,4 +77,7 @@ Route::prefix('peminjaman')->group(function () {
 
 Route::prefix('user/peminjaman')->group(function () {
     Route::get('/', [PeminjamanUser::class, 'index'])->name('user.peminjaman.index');
+    Route::post('/scan', [PeminjamanUser::class, 'scan'])->name('user.peminjaman.scan');
+    Route::delete('/remove/{itemId}', [PeminjamanUser::class, 'removeItem'])->name('user.peminjaman.remove');
+    Route::post('/save', [PeminjamanUser::class, 'saveBorrowing'])->name('user.peminjaman.save');
 });
