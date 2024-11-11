@@ -661,7 +661,7 @@
               <div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                 <div class="flex items-center h-5">
                   <input id="helper-radio-4" name="helper-radio" type="radio" value=""
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                    class="w-4 h-4 text-blue-900 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
                 </div>
                 <div class="ms-2 text-sm">
                   <label for="helper-radio-4" class="font-medium text-gray-900 dark:text-gray-300">
@@ -714,11 +714,8 @@
 
 {{-- ? --}}
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
-
   <!-- Added mt-4 here -->
-  <div
-    class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-
+  <div    class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
   </div>
   <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -742,7 +739,30 @@
     </thead>
     <tbody>
       <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-      
+        <td class="w-4 p-4">
+          <div class="flex items-center">
+            <p>1</p>
+          </div>
+        </td>
+        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+          <div class="ps-2">
+            <div class="text-base font-semibold">Neil Sims</div>
+            <div class="font-normal text-gray-500">neil.sims@flowbite.com</div>
+          </div>
+        </th>
+        <td class="px-6 py-4">
+          React Developer
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
+          </div>
+        </td>
+        <td class="px-6 py-4">
+          <a data-modal-target="popup-modal" data-modal-toggle="popup-modal" class=" text-blue-600
+            dark:text-blue-500 hover:text-red-600 hover:underline">
+            <i class="fa-regular fa-trash-can fa-lg ml-3"></i></a>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -784,12 +804,7 @@
       </div>
     </div>
   </div>
-
-
-
 </div>
-
-
 
 <div class="flex justify-center space-x-2 mt-4">
   <button type="button"
@@ -799,108 +814,106 @@
 </div>
 
 <script>
-  // public/js/barcode-scanner.js
+//   document.addEventListener('DOMContentLoaded', function() {
+//     let lastScanned = '';
+//     let lastScannedTimeout;
 
-  document.addEventListener('DOMContentLoaded', function() {
-    let lastScanned = '';
-    let lastScannedTimeout;
+//     document.addEventListener('keydown', function(e) {
+//         if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
 
-    document.addEventListener('keydown', function(e) {
-        if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
+//         if (e.key === 'Enter') {
+//             if (lastScanned) {
+//                 processBarcodeInput(lastScanned);
+//                 lastScanned = '';
+//                 clearTimeout(lastScannedTimeout);
+//             }
+//         } else {
+//             lastScanned += e.key;
+//             clearTimeout(lastScannedTimeout);
+//             lastScannedTimeout = setTimeout(() => {
+//                 lastScanned = '';
+//             }, 100);
+//         }
+//         console.log(lastScanned);
+//     });
 
-        if (e.key === 'Enter') {
-            if (lastScanned) {
-                processBarcodeInput(lastScanned);
-                lastScanned = '';
-                clearTimeout(lastScannedTimeout);
-            }
-        } else {
-            lastScanned += e.key;
-            clearTimeout(lastScannedTimeout);
-            lastScannedTimeout = setTimeout(() => {
-                lastScanned = '';
-            }, 100);
-        }
-        console.log(lastScanned);
-    });
+//     function processBarcodeInput(barcode) {
+//         fetch('http://127.0.0.1:8000/user/peminjaman/scan', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+//             },
+//             body: JSON.stringify({ barcode: barcode })
+//         })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Network response was not ok');
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             if (data.success) {
+//                 addItemToTable(data.item);
+//                 showAlert('success', data.message, data.code);
+//             } else {
+//                 showAlert('error', data.message, data.code);
+//             }
+//         })
+//         .catch(error => {
+//             showAlert('error', 'Error processing barcode');
+//             console.error('Error:', error);
+//         });
+//     }
 
-    function processBarcodeInput(barcode) {
-        fetch('http://127.0.0.1:8000/peminjaman/scan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ barcode: barcode })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                addItemToTable(data.item);
-                showAlert('success', data.message, data.code);
-            } else {
-                showAlert('error', data.message, data.code);
-            }
-        })
-        .catch(error => {
-            showAlert('error', 'Error processing barcode');
-            console.error('Error:', error);
-        });
-    }
+//     function addItemToTable(item) {
+//         const tbody = document.querySelector('table tbody');
+//         const rowCount = tbody.children.length;
 
-    function addItemToTable(item) {
-        const tbody = document.querySelector('table tbody');
-        const rowCount = tbody.children.length;
+//         const tr = document.createElement('tr');
+//         tr.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600';
+//         tr.dataset.itemId = item.id;
 
-        const tr = document.createElement('tr');
-        tr.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600';
-        tr.dataset.itemId = item.id;
+//         tr.innerHTML = `
+//             <td class="w-4 p-4">
+//                 <div class="flex items-center">
+//                     <p>${rowCount + 1}</p>
+//                 </div>
+//             </td>
+//             <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+//                 <div class="ps-2">
+//                     <div class="text-base font-semibold">${item.name}</div>
+//                 </div>
+//             </th>
+//             <td class="px-6 py-4">
+//                 ${item.brand}
+//             </td>
+//             <td class="px-6 py-4">
+//                 <div class="flex items-center">
+//                     ${item.serial_number}
+//                 </div>
+//             </td>
+//             <td class="px-6 py-4">
+//                 <a href="#" onclick="removeItem(${item.id})" class="text-blue-600 dark:text-blue-500 hover:text-red-600 hover:underline">
+//                     <i class="fa-regular fa-trash-can fa-lg ml-3"></i>
+//                 </a>
+//             </td>
+//         `;
 
-        tr.innerHTML = `
-            <td class="w-4 p-4">
-                <div class="flex items-center">
-                    <p>${rowCount + 1}</p>
-                </div>
-            </td>
-            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                <div class="ps-2">
-                    <div class="text-base font-semibold">${item.name}</div>
-                </div>
-            </th>
-            <td class="px-6 py-4">
-                ${item.brand}
-            </td>
-            <td class="px-6 py-4">
-                <div class="flex items-center">
-                    ${item.serial_number}
-                </div>
-            </td>
-            <td class="px-6 py-4">
-                <a href="#" onclick="removeItem(${item.id})" class="text-blue-600 dark:text-blue-500 hover:text-red-600 hover:underline">
-                    <i class="fa-regular fa-trash-can fa-lg ml-3"></i>
-                </a>
-            </td>
-        `;
+//         tbody.appendChild(tr);
+//     }
 
-        tbody.appendChild(tr);
-    }
+//     function showAlert(type, message, code = '') {
+//         const alertDiv = document.getElementById('alert');
+//         alertDiv.innerHTML = `<p class="${type}">${message} ${code ? `- ${code}` : ''}</p>`;
+//         setTimeout(() => alertDiv.innerHTML = '', 3000);
+//     }
 
-    function showAlert(type, message, code = '') {
-        const alertDiv = document.getElementById('alert');
-        alertDiv.innerHTML = `<p class="${type}">${message} ${code ? `- ${code}` : ''}</p>`;
-        setTimeout(() => alertDiv.innerHTML = '', 3000);
-    }
-
-    window.removeItem = function(itemId) {
-        const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
-        if (row) row.remove();
-    }
-});
+//     window.removeItem = function(itemId) {
+//         const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+//         if (row) row.remove();
+//     }
+// });
 
 </script>
 @endsection
