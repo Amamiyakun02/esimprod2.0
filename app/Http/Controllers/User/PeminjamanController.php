@@ -4,128 +4,68 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Barang;
 class PeminjamanController extends Controller
 {
     public function index()
     {
         $borrowedItems = session()->get('borrowed_items', []);
-    
         return view('user.peminjaman.index', compact('borrowedItems'));
-        // return "Hello World";
     }
 
     public function scan(Request $request)
     {
         $validatedData = $request->validate([
-            'barcode' => 'required|string|max:50',
+            'qrcode' => 'required|string|max:50',
         ]);
         
         \Log::info("Scanned itemcode:", $validatedData);
-        
-        // Implement actual logic to retrieve item details from database
-        $item = $this->findItemByBarcode($validatedData['barcode']);
-
+    
+        // Ambil item berdasarkan QR code dari database
+        $item = $this->findItemByQrcode($validatedData['qrcode']);
+    
+        // Ambil daftar item yang sudah dipindai dari session
+        $borrowedItems = session()->get('borrowed_items', []);
+    
+        // Cek apakah item sudah ada di session
+        if ($item && collect($borrowedItems)->contains('uuid', $item->uuid)) {
+            // Jika item sudah ada, kirimkan response error
+            return response()->json([
+                'success' => false,
+                'message' => 'Item sudah dipindai sebelumnya.',
+            ], 400);
+        }
+    
         $response = [
             'success' => !!$item,
             'message' => $item ? 'Item added successfully' : 'Item not found',
-            'code' => $validatedData,
         ];
-
+    
         if ($item) {
-            // Prepare item data
+            // Siapkan data item
             $itemData = [
                 'uuid' => $item->uuid,
                 'name' => $item->nama_barang,
-                'brand' => $item->jenis_barang_id,
-                'serial_number' => '0001',
+                'merk' => $item->merk,
+                'serial_number' => $item->nomor_seri,
                 'timestamp' => now()->timestamp // Menambahkan timestamp untuk tracking
             ];
-
-            // Mengambil stack yang ada
-            $stack = session()->get('borrowed_items', []);
-            
-            // Push item baru ke stack (menambahkan ke awal array)
-            array_unshift($stack, $itemData);
-            
-            // Simpan kembali stack ke session
-            session()->put('borrowed_items', $stack);
+    
+            // Tambahkan item baru ke array borrowed_items
+            $borrowedItems[] = $itemData;
+    
+            // Simpan array updated borrowed_items ke session
+            session()->put('borrowed_items', $borrowedItems);
             
             $response['item'] = $itemData;
         }
-
+    
         return response()->json($response, 200);
     }
-
-    // Method tambahan untuk mengelola stack
-    private function popItem()
+    
+    protected function findItemByQrcode(string $qrcode)
     {
-        $stack = session()->get('borrowed_items', []);
-        
-        if (!empty($stack)) {
-            // Mengambil item teratas (LIFO)
-            $poppedItem = array_shift($stack);
-            
-            // Update session dengan stack yang baru
-            session()->put('borrowed_items', $stack);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Item removed from stack',
-                'item' => $poppedItem
-            ]);
-        }
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Stack is empty'
-        ]);
-    }
-
-    private function clearStack()
-    {
-        session()->forget('borrowed_items');
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Stack cleared successfully'
-        ]);
-    }
-
-    private function getStack()
-    {
-        $stack = session()->get('borrowed_items', []);
-        
-        return response()->json([
-            'success' => true,
-            'data' => $stack,
-            'count' => count($stack)
-        ]);
-    }
-
-    protected function findItemByBarcode(string $barcode)
-    {
-        return Barang::where('kode_barang', $barcode)->first(); // Replace with your logic
-    }
-
-    public function removeItem($itemId)
-    {
-        $borrowedItems = session()->get('borrowed_items', []);
-        
-        if (isset($borrowedItems[$itemId])) {
-            unset($borrowedItems[$itemId]);
-            session()->put('borrowed_items', $borrowedItems);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Item removed successfully'
-            ]);
-        }
-        
-        return response()->json([
-            'success' => false,
-            'message' => 'Item not found in borrowing list'
-        ], 404);
+        return Barang::where('kode_barang', $qrcode)->first(); // Replace with your logic
     }
 
     // public function saveBorrowing(Request $request)
@@ -179,4 +119,20 @@ class PeminjamanController extends Controller
     //     }
     // }
 
+    public function removeItem($uuid)
+    {
+        // Ambil data 'borrowed_items' dari session
+        $borrowedItems = session()->get('borrowed_items', []);
+    
+        // Cari index item berdasarkan 'uuid' dan hapus jika ditemukan
+        $borrowedItems = array_filter($borrowedItems, function($item) use ($uuid) {
+            return $item['uuid'] !== $uuid;
+        });
+    
+        // Simpan kembali ke session
+        session()->put('borrowed_items', array_values($borrowedItems));
+    
+        // Kembalikan respons JSON untuk AJAX
+        return response()->json(['success' => true, 'message' => 'Item berhasil dihapus']);
+    }
 }
