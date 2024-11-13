@@ -71,13 +71,15 @@ Route::prefix('user')->group(function () {
 });
 
 
-// Route::prefix('peminjaman')->group(function () {
-//     Route::get('/', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-// });
+Route::prefix('peminjaman')->group(function () {
+    Route::get('/', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+});
 
 Route::prefix('user/peminjaman')->group(function () {
     Route::get('/', [PeminjamanUser::class, 'index'])->name('user.peminjaman.index');
     Route::post('/scan', [PeminjamanUser::class, 'scan'])->name('user.peminjaman.scan');
     Route::delete('/remove/{uuid}', [PeminjamanUser::class, 'removeItem'])->name('user.peminjaman.remove');
     Route::post('/save', [PeminjamanUser::class, 'saveBorrowing'])->name('user.peminjaman.save');
+    Route::get('/laporan', [PeminjamanUser::class, 'laporan'])->name('user.peminjaman.laporan');
+    Route::get('/pdf', [PeminjamanUser::class, 'printDocs'])->name('user.peminjaman.print');
 });

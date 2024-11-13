@@ -5,11 +5,16 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Barryvdh\DomPDF\Facade\Pdf as Pdf;
+
+
+
 class PeminjamanController extends Controller
 {
     public function index()
     {
         $borrowedItems = session()->get('borrowed_items', []);
+        // session()->forget('borrowed_items');
         return view('user.peminjaman.index', compact('borrowedItems'));
     }
 
@@ -134,5 +139,15 @@ class PeminjamanController extends Controller
     
         // Kembalikan respons JSON untuk AJAX
         return response()->json(['success' => true, 'message' => 'Item berhasil dihapus']);
+    }
+
+    public function laporan(){
+        return view('user.laporan.index');
+    }
+    public function printDocs()
+    {
+        $data = [];
+        $pdf = Pdf::loadView('user.laporan.index', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan-peminjaman' . time() . '.pdf');
     }
 }
