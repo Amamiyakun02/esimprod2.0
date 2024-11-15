@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\JenisBarangController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\OptionsController;
 use App\Http\Controllers\User\PeminjamanController as PeminjamanUser;
+use App\Http\Controllers\User\PengembalianController as PengembalianUser;
 
 
 Route::prefix('/')->group(function () {
@@ -82,4 +83,9 @@ Route::prefix('user/peminjaman')->group(function () {
     Route::post('/save', [PeminjamanUser::class, 'saveBorrowing'])->name('user.peminjaman.save');
     Route::get('/laporan', [PeminjamanUser::class, 'laporan'])->name('user.peminjaman.laporan');
     Route::get('/pdf', [PeminjamanUser::class, 'printDocs'])->name('user.peminjaman.print');
+});
+
+Route::prefix('user/pengembalian')->group(function (){
+    Route::get('/', [PengembalianUser::class, 'index'])->name('user.pengembalian.index');
+    Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.pengembalian.check');
 });

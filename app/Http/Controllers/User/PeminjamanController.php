@@ -11,12 +11,14 @@ use Barryvdh\DomPDF\Facade\Pdf as Pdf;
 
 class PeminjamanController extends Controller
 {
+    
     public function index()
     {
         $borrowedItems = session()->get('borrowed_items', []);
         // session()->forget('borrowed_items');
         return view('user.peminjaman.index', compact('borrowedItems'));
     }
+
 
     public function scan(Request $request)
     {
@@ -43,7 +45,7 @@ class PeminjamanController extends Controller
     
         $response = [
             'success' => !!$item,
-            'message' => $item ? 'Item added successfully' : 'Item not found',
+            'message' => $item ? 'Barang Telah Ditambahkan.' : 'Barang Tidak Tersedia.',
         ];
     
         if ($item) {
@@ -144,6 +146,7 @@ class PeminjamanController extends Controller
     public function laporan(){
         return view('user.laporan.index');
     }
+
     public function printDocs()
     {
         $data = [];
