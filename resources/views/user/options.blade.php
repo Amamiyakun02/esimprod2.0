@@ -4,15 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="{{ asset('css/output.css') }}">
   <link rel="shortcut icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
   <link rel="stylesheet" href="{{ asset('fa/css/all.min.css') }}">
   <link href="https://db.onlinewebfonts.com/c/7dd5f4bf5d38875ca1822a830b6e6fe4?family=Aptos" rel="stylesheet">
   <title>Opsi Login</title>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body style="background-color: #156082;" class=" dark:bg-neutral-900 flex flex-col min-h-screen">
@@ -55,23 +54,20 @@
           class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
           <ul class="py-2" aria-labelledby="dropdownButton">
             <li>
-              <form action="{{ route('logout') }}" method="post">
-                @csrf
-                <button type="submit" class="w-full"
-                  class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Logout</button>
-              </form>
+              <a href="#"
+                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Logout</a>
             </li>
           </ul>
         </div>
       </div>
       <div class="flex flex-col items-center pb-10">
         <img class="w-24 h-24 mb-3 rounded-full shadow-lg"
-          src="{{ asset('storage/uploads/foto_user/' . Auth::user()->foto) }}" alt="{{ Auth::user()->nama_lengkap }}" />
-        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ Auth::user()->nama_lengkap }}</h5>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->jabatan->jabatan }}</span>
-        <span class="text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->nip }}</span>
+          src="https://flowbite.com/docs/images/people/profile-picture-2.jpg" alt="Bonnie image" />
+        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">Selamat Datang Akbar Laksana</h5>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Teknisi Siaran</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400">199004232022031007</span>
         <div class="flex mt-4 md:mt-6">
-          <a href="{{ route('user.peminjaman.index') }}"
+          <a href="/peminjaman"
             class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-900 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pinjam</a>
           <a href="#" data-modal-target="scan-modal" data-modal-toggle="scan-modal"
             class="py-2 px-4 ms-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Kembalikan</a>
@@ -95,8 +91,7 @@
           <button type="button"
             class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
             data-modal-hide="scan-modal">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 14 14">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
             </svg>
@@ -105,17 +100,19 @@
         </div>
         <!-- Modal body -->
         <div class="p-4 md:p-5">
-          <div>
-            <input type="text" name="code" id="code"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-              placeholder="Kode Peminjaman" />
-            <span id="error-message" class="text-red-600 text-sm mt-2 hidden"></span>
-          </div>
-
-          <button type="button" id="confirm"
-            class="mt-4 w-full text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Lanjut
-          </button>
+          <form class="space-y-4" action="{{ route('user.pengembalian.check') }}">
+          @csrf
+            <div>
+              <input type="text" name="code" id="code"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                placeholder="Kode Peminjaman"/>
+                @error('code')
+                  <span class="text-red-600 text-sm mt-2">{{ $message }}</span>
+                @enderror
+            </div>
+            <button type="submit"
+              class="w-full text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Lanjut</button>
+          </form>
         </div>
       </div>
     </div>
@@ -124,62 +121,24 @@
 </body>
 
 <script>
-  // Wait for the modal to be shown, then focus the input field
-  const modal = document.getElementById('scan-modal');
-  const input = document.getElementsByTagName('input');
-  const errorMessage = document.getElementById('error-message');
-  errorMessage.textContent = '';
-  errorMessage.classList.add('hidden');
-  // When modal opens
-  modal.addEventListener('show', function() {
-    input.focus();
-  });
+// Wait for the modal to be shown, then focus the input field
+const modal = document.getElementById('scan-modal');
+const input = document.getElementById('email');
 
-  // Or, if Flowbite's modal doesn't have a 'show' event, use this:
-  // Listen for the modal toggle
-  const modalToggleButton = document.querySelector('[data-modal-toggle="scan-modal"]');
-  modalToggleButton.addEventListener('click', function() {
-    setTimeout(() => {
-      input.focus(); // Ensure focus after modal animation completes
-    }, 200); // Wait a little bit to make sure the modal has fully opened
-  });
+// When modal opens
+modal.addEventListener('show', function() {
+  // Set focus to the input field
+  input.focus();
+});
 
-  document.getElementById('confirm').addEventListener('click', function() {
-    const code = document.getElementById('code').value;
-
-    // Validasi input sebelum mengirim request
-    if (!code) {
-      errorMessage.textContent = 'Kode peminjaman tidak boleh kosong!';
-      errorMessage.classList.remove('hidden');
-      return;
-    }
-
-    fetch('/user/pengembalian/check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          code
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert(data.message);
-          window.location.href = '/user/pengembalian';
-        } else {
-          errorMessage.textContent = data.message;
-          errorMessage.classList.remove('hidden');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        errorMessage.textContent = 'Terjadi kesalahan: Tidak dapat terhubung ke server.';
-        errorMessage.classList.remove('hidden');
-      });
-  });
+// Or, if Flowbite's modal doesn't have a 'show' event, use this:
+// Listen for the modal toggle
+const modalToggleButton = document.querySelector('[data-modal-toggle="scan-modal"]');
+modalToggleButton.addEventListener('click', function() {
+  setTimeout(() => {
+    input.focus(); // Ensure focus after modal animation completes
+  }, 200); // Wait a little bit to make sure the modal has fully opened
+});
 </script>
 
 </html>
