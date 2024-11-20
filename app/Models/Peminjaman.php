@@ -15,16 +15,22 @@ class Peminjaman extends Model
     protected $fillable = [
         'uuid',
         'kode_peminjaman',
-        'kode_barang',
+        'peruntukan_id',
         'nomor_surat',
         'tanggal_peminjaman',
         'tanggal_kembali',
         'peminjam',
-        'petugas'
+        'petugas',
+        'status',
     ];
 
     public function barang(): BelongsTo
     {
         return $this->belongsTo(Barang::class, 'kode_barang', 'kode_barang');
+    }
+
+    public function peruntukan(): BelongsTo
+    {
+        return $this->belongsTo(Peruntukan::class, 'peruntukan_id');
     }
 }

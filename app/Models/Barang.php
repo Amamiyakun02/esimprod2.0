@@ -20,6 +20,8 @@ class Barang extends Model
         'jenis_barang_id',
         'status',
         'deskripsi',
+        'nomor_seri',
+        'merk',
         'qr_code',
         'limit',
         'sisa_limit',
@@ -28,12 +30,12 @@ class Barang extends Model
 
     public function jenisBarang(): BelongsTo
     {
-        return $this->belongsTo(JenisBarang::class, 'jenis_barang_id', 'kode_jenis_barang');
+        return $this->belongsTo(JenisBarang::class, 'jenis_barang_id');
     }
 
-    public function peminjaman(): HasMany
+    public function detail_peminjaman(): hasMany
     {
-        return $this->hasMany(Peminjaman::class, 'kode_barang', 'kode_barang');
+        return $this->hasMany(DetailPeminjaman::class);
     }
 
     public function perawatan(): HasMany

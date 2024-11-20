@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailPeminjaman extends Model
 {
@@ -17,8 +18,8 @@ class DetailPeminjaman extends Model
         'kode_barang',
     ];
 
-    public function barang(): HasMany
+    public function barang(): belongsTo
     {
-        return $this->hasMany(Barang::class, '', 'kode_jenis_barang');
+        return $this->belongsTo(Barang::class, 'kode_barang', 'kode_barang');
     }
 }

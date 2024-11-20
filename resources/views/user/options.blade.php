@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -67,7 +68,7 @@
         <span class="text-sm text-gray-500 dark:text-gray-400">Teknisi Siaran</span>
         <span class="text-sm text-gray-500 dark:text-gray-400">199004232022031007</span>
         <div class="flex mt-4 md:mt-6">
-          <a href="/peminjaman"
+          <a href="{{ route('user.peminjaman.index') }}"
             class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-900 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Pinjam</a>
           <a href="#" data-modal-target="scan-modal" data-modal-toggle="scan-modal"
             class="py-2 px-4 ms-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Kembalikan</a>
@@ -100,19 +101,13 @@
         </div>
         <!-- Modal body -->
         <div class="p-4 md:p-5">
-          <form class="space-y-4" action="{{ route('user.pengembalian.check') }}">
-          @csrf
             <div>
               <input type="text" name="code" id="code"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Kode Peminjaman"/>
-                @error('code')
-                  <span class="text-red-600 text-sm mt-2">{{ $message }}</span>
-                @enderror
             </div>
-            <button type="submit"
+            <button type="button" id="confirm"
               class="w-full text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Lanjut</button>
-          </form>
         </div>
       </div>
     </div>
@@ -139,6 +134,46 @@ modalToggleButton.addEventListener('click', function() {
     input.focus(); // Ensure focus after modal animation completes
   }, 200); // Wait a little bit to make sure the modal has fully opened
 });
+
+document.getElementById('confirm').addEventListener('click', function () {
+    const code = document.getElementById('code').value;
+
+    // Validasi input sebelum mengirim request
+    if (!code) {
+        alert('Kode peminjaman tidak boleh kosong!');
+        return;
+    }
+
+    // Kirim permintaan ke API menggunakan Fetch
+    fetch('/user/pengembalian/check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ code })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Kode tidak ditemukan atau terjadi kesalahan pada server.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert('Kode ditemukan! ' + data.message);
+            // Redirect jika diperlukan
+            window.location.href = data.redirect_url;
+        } else {
+            alert('Kode tidak ditemukan: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan: ' + error.message);
+    });
+});
+
 </script>
 
 </html>

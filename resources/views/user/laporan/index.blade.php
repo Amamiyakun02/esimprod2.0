@@ -103,19 +103,19 @@
 
     <div class="info-section">
       <div class="item">
-        <p><strong>Peminjam:</strong> Akbar Laksana</p>
+        <p><strong>Peminjam:</strong> {{ $peminjaman->peminjam }}</p>
         <p><strong>NIP:</strong> 199004232022031007</p>
         <p><strong>No HP:</strong> 085386612234</p>
         <p><strong>Jabatan:</strong> Teknisi Siaran</p>
       </div>
       <div class="item">
-        <p><strong>Surat Tugas:</strong> ST/PI/2023/SDK/10/TVRI</p>
-        <p><strong>Peruntukan:</strong> Pesona Indonesia / PAT</p>
-        <p><strong>Tgl Penggunaan:</strong> 11 Oktober 2023</p>
-        <p><strong>Sampai:</strong> 14 Oktober 2023</p>
+        <p><strong>Surat Tugas:</strong> {{ $peminjaman->nomor_surat }}</p>
+        <p><strong>Peruntukan:</strong> {{ $peminjaman->peruntukan->peruntukan }}</p>
+        <p><strong>Tgl Penggunaan:</strong> {{ \Carbon\Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}</p>
+        <p><strong>Sampai:</strong> {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}</p>
       </div>
       <div class="item">
-        <p><strong>Code:</strong> PMB0001</p>
+        <p><strong>Code:</strong> {{ $peminjaman->kode_peminjaman }}</p>
         <p><strong>QR Pengembalian:</strong></p>
         <img
           src="img/assets/qr-code-placeholder.svg"
@@ -136,55 +136,22 @@
         </tr>
       </thead>
       <tbody>
+      @foreach($barang as $key => $item)
         <tr>
-          <td>1</td>
-          <td>EOS 6D</td>
-          <td>Canon</td>
-          <td>sreg2328434792790</td>
-          <td></td>
+            <td>{{ $key + 1 }}</td>
+            <td>{{ $item['nama_barang'] }}</td>
+            <td>{{ $item['merk'] }}</td>
+            <td>{{ $item['nomor_seri'] }}</td>
+            <td></td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>EOS 7D Mark II</td>
-          <td>Canon</td>
-          <td>HSJ283214691288</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Tripod 650 EX</td>
-          <td>Libec</td>
-          <td>JSHH462186HH</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>Lensa fix 50mm</td>
-          <td>Canon</td>
-          <td>JDHAGJ5267882</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>Clip On Wireless</td>
-          <td>Shure</td>
-          <td>JDJKAK0000JSKAK</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>Mic Rode</td>
-          <td>Rode</td>
-          <td>KLLLAJJS992828</td>
-          <td></td>
-        </tr>
+        @endforeach
       </tbody>
     </table>
 
     <div class="btn-group">
-      <button class="btn">Download PDF</button>
-      <button class="btn">Cetak</button>
-      <button class="btn">Selesai</button>
+      <a href="{{ route('user.peminjaman.pdf') }}" class="btn">Download PDF</a>
+{{--      <button class="btn">Cetak</button>--}}
+      <a href="{{ route('options') }}" class="btn">Selesai</a>
     </div>
   </div>
 </body>

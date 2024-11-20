@@ -4,13 +4,11 @@ namespace Database\Factories;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Arr;
-use Illuminate\Validation\Rules\Unique;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Peruntukan>
  */
-class JenisBarangFactory extends Factory
+class PeruntukanFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,7 +19,7 @@ class JenisBarangFactory extends Factory
     {
         return [
             'uuid' => Str::uuid(),
-            'jenis_barang' => fake()->word(),
+            'peruntukan' => fake()->company(),
             'created_at' => now(),
             'updated_at' => now(),
         ];
