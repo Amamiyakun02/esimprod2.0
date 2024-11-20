@@ -10,20 +10,24 @@ class Peminjaman extends Model
 {
     use HasFactory;
     protected $table = 'peminjaman';
+    protected $with = ['barang'];
 
     protected $fillable = [
         'uuid',
         'kode_peminjaman',
-        'nomor_peminjaman',
         'peruntukan_id',
         'nomor_surat',
-        'tanggal_penggunaan',
         'tanggal_peminjaman',
         'tanggal_kembali',
         'peminjam',
-        'qr_code',
-        'status'
+        'petugas',
+        'status',
     ];
+
+    public function barang(): BelongsTo
+    {
+        return $this->belongsTo(Barang::class, 'kode_barang', 'kode_barang');
+    }
 
     public function peruntukan(): BelongsTo
     {

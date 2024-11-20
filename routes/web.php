@@ -80,12 +80,12 @@ Route::prefix('user/peminjaman')->group(function () {
     Route::get('/', [PeminjamanUser::class, 'index'])->name('user.peminjaman.index');
     Route::post('/scan', [PeminjamanUser::class, 'scan'])->name('user.peminjaman.scan');
     Route::delete('/remove/{uuid}', [PeminjamanUser::class, 'removeItem'])->name('user.peminjaman.remove');
-    Route::post('/save', [PeminjamanUser::class, 'saveBorrowing'])->name('user.peminjaman.save');
+    Route::post('/store', [PeminjamanUser::class, 'store'])->name('user.peminjaman.store');
     Route::get('/laporan', [PeminjamanUser::class, 'laporan'])->name('user.peminjaman.laporan');
-    Route::get('/pdf', [PeminjamanUser::class, 'printDocs'])->name('user.peminjaman.print');
+    Route::get('/pdf', [PeminjamanUser::class, 'printDocs'])->name('user.peminjaman.pdf');
 });
 
 Route::prefix('user/pengembalian')->group(function (){
     Route::get('/', [PengembalianUser::class, 'index'])->name('user.pengembalian.index');
-    Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.pengembalian.check');
+    Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.    pengembalian.check');
 });

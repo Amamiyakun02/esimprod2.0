@@ -19,16 +19,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('nip')->unique();
             $table->string('nomor_hp', 13);
-            $table->unsignedBigInteger('jabatan_id');
             $table->string('qr_code');
             $table->string('role')->default('user');
+            $table->string('jabatan');
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable()->default(null);
+            $table->string('password')->nullable();
             $table->string('foto', 2048)->nullable();
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('jabatan_id')->references('id')->on('jabatan')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

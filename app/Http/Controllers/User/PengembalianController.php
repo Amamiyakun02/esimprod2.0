@@ -4,37 +4,41 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Peminjamann;
+use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use App\Models\Barang;
 class PengembalianController extends Controller
 {
     public function index()
     {
-
-        return;
+        return view('user.pengembalian.index');
     }
 
     public function checkPeminjaman(Request $request)
     {
-        // Validasi input code
-        $request->validate([
-            'code' => 'required|string'
-        ]);
-    
-        // Kode peminjaman yang valid
-        $validCode = "SDFDSGDS";
-    
-        // Pengecekan apakah code input sesuai dengan kode peminjaman yang valid
-        if ($request->code === $validCode) {
-            // Redirect ke route pengembalian jika berhasil
-            return redirect()->route('user.pengembalian.index')->with('success', 'Kode ditemukan, silakan lakukan pengembalian.');
-        }
-    
-        // Jika kode tidak cocok, kembali ke halaman sebelumnya dengan pesan error
-        return back()->withErrors(['code' => 'Kode tidak ditemukan.']);
+    $request->validate([
+        'code' => 'required|string'
+    ]);
+
+    // Cari kode peminjaman di database
+    $peminjaman = Peminjaman::where('kode_peminjaman', $request->code)->first();
+
+    if ($peminjaman) {
+        // Response jika kode ditemukan
+        return response()->json([
+            'success' => true,
+            'message' => 'Kode ditemukan, silakan lakukan pengembalian.',
+            'redirect_url' => route('user.pengembalian.index')
+        ], 200);
     }
-    
+
+    // Response jika kode tidak ditemukan
+    return response()->json([
+        'success' => false,
+        'message' => 'Kode tidak ditemukan.'
+    ], 404);
+}
+
 
     public function confirmPengembalian()
     {
