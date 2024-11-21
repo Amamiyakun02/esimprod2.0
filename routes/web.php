@@ -87,5 +87,5 @@ Route::prefix('user/peminjaman')->group(function () {
 
 Route::prefix('user/pengembalian')->group(function (){
     Route::get('/', [PengembalianUser::class, 'index'])->name('user.pengembalian.index');
-    Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.    pengembalian.check');
+    Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.pengembalian.check');
 });
