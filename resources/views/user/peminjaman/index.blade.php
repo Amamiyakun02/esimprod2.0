@@ -345,7 +345,6 @@
               addItemToTable(data.item);
               document.querySelector("#toast-success .text-sm").textContent = data.message; // Set success message
               document.getElementById("toast-success").style.display = "flex"; // Show success toast
-              // console.log(data.message);
               setTimeout(() => {
                 document.getElementById("toast-success").style.display = "none";
             }, 1500); // Hide after 3 seconds
