@@ -105,6 +105,7 @@
               <input type="text" name="code" id="code"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Kode Peminjaman"/>
+                <span id="error-message" class="text-red-600 text-sm mt-2 hidden"></span>
             </div>
             <button type="button" id="confirm"
               class="w-full text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Lanjut</button>
@@ -118,11 +119,12 @@
 <script>
 // Wait for the modal to be shown, then focus the input field
 const modal = document.getElementById('scan-modal');
-const input = document.getElementById('email');
-
+const input = document.getElementsByTagName('input');
+const errorMessage = document.getElementById('error-message');
+errorMessage.textContent = '';
+errorMessage.classList.add('hidden');
 // When modal opens
 modal.addEventListener('show', function() {
-  // Set focus to the input field
   input.focus();
 });
 
@@ -140,11 +142,11 @@ document.getElementById('confirm').addEventListener('click', function () {
 
     // Validasi input sebelum mengirim request
     if (!code) {
-        alert('Kode peminjaman tidak boleh kosong!');
+        errorMessage.textContent = 'Kode peminjaman tidak boleh kosong!';
+        errorMessage.classList.remove('hidden');
         return;
     }
 
-    // Kirim permintaan ke API menggunakan Fetch
     fetch('/user/pengembalian/check', {
         method: 'POST',
         headers: {
@@ -153,24 +155,20 @@ document.getElementById('confirm').addEventListener('click', function () {
         },
         body: JSON.stringify({ code })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Kode tidak ditemukan atau terjadi kesalahan pada server.');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
             alert('Kode ditemukan! ' + data.message);
             // Redirect jika diperlukan
             window.location.href = data.redirect_url;
         } else {
-            alert('Kode tidak ditemukan: ' + data.message);
-        }
+            errorMessage.textContent = data.message;
+            errorMessage.classList.remove('hidden');        }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan: ' + error.message);
+        errorMessage.textContent = 'Terjadi kesalahan: Tidak dapat terhubung ke server.';
+        errorMessage.classList.remove('hidden');
     });
 });
 

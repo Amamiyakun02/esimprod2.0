@@ -1,6 +1,6 @@
 @extends('layouts.user.main')
 
-@section('title', 'Peminjaman')
+@section('title', 'Pengembalian')
 
 @section('content')
 
@@ -25,15 +25,9 @@
         <label for="simple-search" class="sr-only"></label>
         <div class="relative w-full">
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <!-- <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
-              viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd" />
-            </svg> -->
-            <i class="fa-solid fa-file-lines w-1 h-5 text-gray-500 dark:text-gray-400"></i>
+             <i class="fa-solid fa-file-lines w-1 h-5 text-gray-500 dark:text-gray-400"></i>
           </div>
-          <input type=" text" id="simple-search"
+          <input type="text" id="simple-search"
             class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             placeholder="Masukkan Surat Tugas" disabled>
         </div>
@@ -75,67 +69,11 @@
           </div>
         </div>
 
-        <button id="dropdownRadioHelperButton" data-dropdown-toggle="dropdownRadioHelper"
-          class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          type="button">Peruntukan<svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m1 1 4 4 4-4" />
-          </svg>
-        </button>
-
-        <!-- Dropdown menu -->
-        <div id="dropdownRadioHelper"
-          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-60 dark:bg-gray-700 dark:divide-gray-600">
-          <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
-            aria-labelledby="dropdownRadioHelperButton">
-            <li>
-              <div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                <div class="flex items-center h-5">
-                  <input id="helper-radio-4" name="helper-radio" type="radio" value=""
-                    class="w-4 h-4 text-blue-900 bg-gray-100 border-gray-300 focus:ring-blue-800 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                </div>
-                <div class="ms-2 text-sm">
-                  <label for="helper-radio-4" class="font-medium text-gray-900 dark:text-gray-300">
-                    <div>Individual</div>
-                    <p id="helper-radio-text-4" class="text-xs font-normal text-gray-500 dark:text-gray-300">Some
-                      helpful instruction goes over here.</p>
-                  </label>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                <div class="flex items-center h-5">
-                  <input id="helper-radio-5" name="helper-radio" type="radio" value=""
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                </div>
-                <div class="ms-2 text-sm">
-                  <label for="helper-radio-5" class="font-medium text-gray-900 dark:text-gray-300">
-                    <div>Company</div>
-                    <p id="helper-radio-text-5" class="text-xs font-normal text-gray-500 dark:text-gray-300">Some
-                      helpful instruction goes over here.</p>
-                  </label>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div class="flex p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                <div class="flex items-center h-5">
-                  <input id="helper-radio-6" name="helper-radio" type="radio" value=""
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                </div>
-                <div class="ms-2 text-sm">
-                  <label for="helper-radio-6" class="font-medium text-gray-900 dark:text-gray-300">
-                    <div>Non profit</div>
-                    <p id="helper-radio-text-6" class="text-xs font-normal text-gray-500 dark:text-gray-300">Some
-                      helpful instruction goes over here.</p>
-                  </label>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+      <div class="col-span-1">
+            <select id="peruntukan"
+          class="w-full p-2 text-sm border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+          <option value="" selected>DEWA IBARI</option>
+        </select>
       </div>
     </div>
   </div>
@@ -226,34 +164,34 @@
 </div>
 
 <div class="flex justify-center space-x-2 mt-4">
-  <button type="button"
-    class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Kembali</button>
+  <a href="{{ route('options') }}" type="button"
+    class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Kembali</a>
   <button type="button"
     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Simpan</button>
 </div>
 
 <!-- Toast Notif -->
-<div id="toast-danger"
-  class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
-  role="alert">
-  <div
-    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-      <path
-        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
-    </svg>
-    <span class="sr-only">Error icon</span>
-  </div>
-  <div class="ms-3 text-sm font-normal">Item has been deleted.</div>
-  <button type="button"
-    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
-    data-dismiss-target="#toast-danger" aria-label="Close">
-    <span class="sr-only">Close</span>
-    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-    </svg>
-  </button>
-</div>
+{{--<div id="toast-danger"--}}
+{{--  class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"--}}
+{{--  role="alert">--}}
+{{--  <div--}}
+{{--    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">--}}
+{{--    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">--}}
+{{--      <path--}}
+{{--        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />--}}
+{{--    </svg>--}}
+{{--    <span class="sr-only">Error icon</span>--}}
+{{--  </div>--}}
+{{--  <div class="ms-3 text-sm font-normal">Item has been deleted.</div>--}}
+{{--  <button type="button"--}}
+{{--    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"--}}
+{{--    data-dismiss-target="#toast-danger" aria-label="Close">--}}
+{{--    <span class="sr-only">Close</span>--}}
+{{--    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">--}}
+{{--      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"--}}
+{{--        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />--}}
+{{--    </svg>--}}
+{{--  </button>--}}
+{{--</div>--}}
 
 @endsection
