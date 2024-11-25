@@ -200,12 +200,12 @@
             </div>
         </div>
 
-        {{-- Save Success Modal --}}
+        {{-- Create Borrow Success Modal --}}
         <div id="successModal" tabindex="-1" aria-hidden="true"
-             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
-            <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+             class="hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50">
+            <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
                 {{-- Modal content --}}
-                <div class="relative p-4 text-center bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
+                <div class="text-center">
                     <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
                         <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor"
                              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -215,14 +215,15 @@
                         </svg>
                         <span class="sr-only">Success</span>
                     </div>
-                    <p class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Data berhasil ditambahkan</p>
-                    <button data-modal-toggle="successModal" type="button"
-                            class="py-2 px-3 text-sm font-medium text-center text-white rounded-lg bg-blue-900 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:focus:ring-primary-900">
-                        Selesai
+                    <p class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Peminjaman Berhasil Di Buat</p>
+                    <button id="successButton" type="button"
+                            class="py-2 px-3 text-sm font-medium text-white bg-blue-900 hover:bg-blue-700 rounded-lg focus:ring-4 focus:outline-none dark:focus:ring-primary-900">
+                        OK
                     </button>
                 </div>
             </div>
         </div>
+
     </div>
 
     {{-- button --}}
@@ -237,12 +238,6 @@
                 class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
             Simpan
         </button>
-{{--        <!-- Modal toggle -->--}}
-{{--        <button id="successButton" data-modal-target="successModal" data-modal-toggle="successModal"--}}
-{{--                class="block text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"--}}
-{{--                type="button">--}}
-{{--            Show success message--}}
-{{--        </button>--}}
     </div>
 {{-- Toast Success --}}
     <div id="toast-success-add"
@@ -275,7 +270,7 @@
 
 {{--    <!-- Toast -->--}}
     <div id="toast-danger-2"
-         class="flex items-center fixed top-14 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+         class="hidden items-center fixed top-14 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
          role="alert">
         <div
             class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-700 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
@@ -299,9 +294,9 @@
     </div>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const modalTriggers = document.querySelectorAll('[data-modal-toggle="popup-modal"]');
-
             modalTriggers.forEach(trigger => {
                 trigger.addEventListener('click', function () {
                     const uuid = this.getAttribute('data-uuid');
@@ -317,13 +312,14 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const datepickerInput = document.getElementById('datepicker');
-
             // Initialize Flowbite's datepicker with minDate
             const datepicker = new Datepicker(datepickerInput, {
                 minDate: new Date(), // Disable past dates
                 todayHighlight: true // Highlight today's date
             });
         });
+
+        // Scanner Input Program
         document.addEventListener('DOMContentLoaded', function () {
             let lastScanned = '';
             let lastScannedTimeout;
@@ -360,7 +356,7 @@
                         if (data.success) {
                             addItemToTable(data.item);
                             document.querySelector("#toast-success-add .text-sm").textContent = data.message; // Set success message
-                            document.getElementById("toast-success").style.display = "flex"; // Show success toast
+                            document.getElementById("toast-success-add").style.display = "flex"; // Show success toast
                             // console.log(data.message);
                             setTimeout(() => {
                                 document.getElementById("toast-success").style.display = "none";
@@ -379,6 +375,7 @@
                     });
             }
 
+            // Menambahkan data yang di scan ke tabel & update penomoran
             function addItemToTable(item) {
                 const tbody = document.querySelector('table tbody');
                 const rowCount = tbody.children.length + 1;
@@ -416,6 +413,7 @@
             }
         });
 
+        // Remove data barang ditabel scan
         function removeItem(uuid) {
             fetch(`/user/peminjaman/remove/${uuid}`, {
                 method: 'DELETE',
@@ -439,6 +437,7 @@
                 });
         }
 
+        // Store data peminjaman
         async function savePeminjaman() {
             // Ambil nilai dari input form
             const suratTugas = document.getElementById('nomor-surat').value;
@@ -483,13 +482,19 @@
                 const result = await response.json();
                 if (result.success) {
                     const successModal = document.getElementById('successModal');
-                    successModal.classList.remove('hidden'); // Tampilkan modal dengan menghapus kelas 'hidden'
-                    const selesaiButton = successModal.querySelector('button[data-modal-toggle="successModal"]');
-                    selesaiButton.addEventListener('click', function () {
-                        window.location.href = '{{route('user.peminjaman.laporan')}}'; // Sesuaikan dengan route Anda
+                    successModal.classList.remove('hidden'); // Hapus kelas 'hidden' untuk menampilkan modal
+
+                    // Tombol "Selesai" dalam modal
+                    const selesaiButton = document.getElementById('successButton');
+                    selesaiButton.addEventListener('click', () => {
+                        window.location.href = '{{ route("user.peminjaman.laporan") }}'; // Redirect ke halaman laporan
                     });
                 } else {
-                    alert(result.message || 'Terjadi kesalahan saat menyimpan data.');
+                    document.querySelector("#toast-danger-2 .text-sm").textContent = data.message; // Set failure message
+                    document.getElementById("toast-danger-2").style.display = "flex"; // Show warning toast
+                    setTimeout(() => {
+                        document.getElementById("toast-danger-2").style.display = "none";
+                    }, 1500);
                 }
             } catch (error) {
                 console.error('Error:', error);

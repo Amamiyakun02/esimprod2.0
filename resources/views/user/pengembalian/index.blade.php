@@ -16,7 +16,6 @@
   </div>
 </div>
 
-
 <!-- Start coding here -->
 <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg mt-3">
   <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -29,13 +28,11 @@
           </div>
           <input type="text" id="simple-search"
             class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Masukkan Surat Tugas" disabled>
+            placeholder="{{ $peminjaman->nomor_surat }}" disabled>
         </div>
       </form>
     </div>
-    <div
-      class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
-
+    <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
       <div class="flex items-center w-full space-x-3 md:w-auto">
 
         <!-- Datepickers -->
@@ -51,7 +48,7 @@
             <input id="datepicker-range-start" datepicker datepicker-buttons datepicker-autoselect-today
               datepicker-min-date="today" datepicker-max-date="today" name="start" type="text"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Pilih tanggal peminjaman" disabled>
+              placeholder="{{ \Carbon\Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}" disabled>
           </div>
           <span class="mx-4 text-gray-500">sampai</span>
           <div class="relative">
@@ -65,21 +62,17 @@
             <input id="datepicker-range-end" datepicker datepicker-buttons datepicker-autoselect-today
               datepicker-min-date="today" name="end" type="text"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Pilih tanggal peminjaman " disabled>
+              placeholder=" {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}" disabled>
           </div>
         </div>
-
-      <div class="col-span-1">
-            <select id="peruntukan"
-          class="w-full p-2 text-sm border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-          <option value="" selected>DEWA IBARI</option>
-        </select>
-      </div>
+        <input type="text" id="disabled-input" aria-label="disabled input"
+            class="bg-gray-50 border border-gray-400 text-center text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            value="{{ $peminjaman->peruntukan->peruntukan }}" disabled>
     </div>
   </div>
 </div>
 
-{{-- ? --}}
+{{-- Barang --}}
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
   <!-- Added mt-4 here -->
   <div
@@ -103,95 +96,236 @@
         <th scope="col" class="px-6 py-3">
           Kondisi
         </th>
+          <th>
+          </th>
       </tr>
     </thead>
-    <tbody>
-      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-        <td class="w-4 p-4">
-          <div class="flex items-center">
-            <p>1</p>
-          </div>
-        </td>
-        <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-          <div class="ps-2">
-            <div class="text-base font-semibold">Neil Sims</div>
-            <div class="font-normal text-gray-500">neil.sims@flowbite.com</div>
-          </div>
-        </th>
-        <td class="px-6 py-4">
-          React Developer
-        </td>
-        <td class="px-6 py-4">
-          <div class="flex items-center">
-            <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
-          </div>
-        </td>
-        <td class="px-6 py-4">
-          <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal"
-            class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            type="button">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-              viewBox="0 0 16 3">
-              <path
-                d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-            </svg>
-          </button>
-        </td>
-      </tr>
-    </tbody>
+      <tbody>
+      @foreach($barang as $key => $item)
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td class="w-4 p-4">
+                  <div class="flex items-center">
+                      <p>{{ $key + 1 }}</p>
+                  </div>
+              </td>
+              <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                  <div class="ps-2">
+                      <div class="text-base font-semibold">{{ $item['nama_barang'] }} </div>
+                  </div>
+              </th>
+              <td>{{ $item['merk'] }}</td>
+              <td class="px-6 py-4">
+                  <div class="flex items-center">
+                      {{ $item['nomor_seri'] }}"
+                  </div>
+              </td>
+              <td class="px-6 py-4">
+                  <div class="max-w-sm mx-auto">
+                      <select id="item-conditions"
+                              class="bg-gray-50 border border-gray-400 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-auto p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                          <option selected value="baik">Baik</option>
+                          <option value="rusak">Rusak</option>
+                          <option value="cacat">Cacat</option>
+                      </select>
+                  </div>
+              </td>
+              <td>
+                <input type="hidden" name="uuid" value="{{ $item['uuid'] }}" class="item-uuid" id="item-uuid">
+                <input id="bordered-checkbox-2" type="checkbox" value="" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" data-code="{{ $item['kode_barang'] }}" disabled>
+                <label for="bordered-checkbox-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
+              </td>
+          </tr>
+      @endforeach
+      </tbody>
   </table>
 </div>
-
-{{-- Kondisi dropdown --}}
-<div id="dropdownDotsHorizontal"
-  class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
-    <li>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sehat</a>
-    </li>
-    <li>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sakit</a>
-    </li>
-    <li>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sekarat</a>
-    </li>
-  </ul>
-  <div class="py-2">
-    <a href="#"
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated
-      link</a>
-  </div>
 </div>
-
 <div class="flex justify-center space-x-2 mt-4">
   <a href="{{ route('options') }}" type="button"
     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Kembali</a>
-  <button type="button"
+  <button type="button" data-modal-target="save-modal" data-modal-toggle="save-modal"
     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Simpan</button>
 </div>
 
-<!-- Toast Notif -->
-{{--<div id="toast-danger"--}}
-{{--  class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"--}}
-{{--  role="alert">--}}
-{{--  <div--}}
-{{--    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">--}}
-{{--    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">--}}
-{{--      <path--}}
-{{--        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />--}}
-{{--    </svg>--}}
-{{--    <span class="sr-only">Error icon</span>--}}
-{{--  </div>--}}
-{{--  <div class="ms-3 text-sm font-normal">Item has been deleted.</div>--}}
-{{--  <button type="button"--}}
-{{--    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"--}}
-{{--    data-dismiss-target="#toast-danger" aria-label="Close">--}}
-{{--    <span class="sr-only">Close</span>--}}
-{{--    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">--}}
-{{--      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"--}}
-{{--        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />--}}
-{{--    </svg>--}}
-{{--  </button>--}}
-{{--</div>--}}
+<!-- Toast Redundant Item -->
+<div id="toast-danger"
+  class="hidden items-center fixed bottom-9 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+  role="alert">
+  <div
+    class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-700 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+    <svg class="w-7 h-7" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+    </svg>
+    <span class="sr-only">Error icon</span>
+  </div>
+  <div class="ms-3 text-normal font-normal">Jangan meakal</div>
+  <button type="button"
+    class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-500 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+    data-dismiss-target="#toast-danger" aria-label="Close">
+    <span class="sr-only">Close</span>
+    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+    </svg>
+  </button>
+</div>
+
+{{-- Save Modal Confirmation --}}
+    <div id="save-modal" tabindex="-1"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
+      <div class="relative p-4 w-full max-w-md">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <button type="button"
+            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            data-modal-hide="save-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+          <div class="p-4 md:p-5 text-center flex flex-col items-center">
+            <svg class="mx-auto mb-2 text-gray-400 w-6 h-6 dark:text-gray-200" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            <h3 class="mb-4 text-lg font-normal text-gray-500 dark:text-gray-400">Simpan Data Pengembalian?</h3>
+            <div id="submitPengembalian" class="flex justify-center space-x-2 mt-4">
+              <button data-modal-hide="popup-modal" id="savePengembalian" type="button"
+                class="text-white bg-blue-900 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                Ya
+              </button>
+              <button data-modal-hide="save-modal" type="button"
+                class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                Tidak
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<script>
+    // Scan QR-code
+    document.addEventListener('DOMContentLoaded', function () {
+        let kodeBarangScanned = '';
+        let lastScannedTimeout;
+
+        let checkbox = document.getElementById('bordered-checkbox-2');
+
+        let dataCode = checkbox.getAttribute('data-code');
+
+        document.addEventListener('keydown', function (e) {
+            if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
+
+            if (e.key === 'Enter') {
+                if (kodeBarangScanned) {
+                    validatingItem(kodeBarangScanned);
+                    kodeBarangScanned = '';
+                    clearTimeout(lastScannedTimeout);
+                }
+            } else {
+                kodeBarangScanned += e.key;
+                clearTimeout(lastScannedTimeout);
+                lastScannedTimeout = setTimeout(() => {
+                    kodeBarangScanned = '';
+                }, 100);
+            }
+        });
+    });
+    async function validatingItem(itemCode) {
+        try {
+            const response = await fetch('/user/pengembalian/validation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ itemCode: itemCode })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                let checkboxes = document.querySelectorAll('[data-code]');
+
+                checkboxes.forEach((checkbox) => {
+                    if (checkbox.getAttribute('data-code') === itemCode) {
+                        checkbox.checked = true;
+                        const row = checkbox.closest('tr');
+                        if (row) {
+                            row.classList.add('bg-green-50'); // Highlight dengan warna hijau
+
+                            // Tambahkan animasi flash
+                            row.classList.add('flash-animation');
+                            setTimeout(() => {
+                                row.classList.remove('flash-animation');
+                            }, 1000);
+                        }
+                        // Disable checkbox setelah dicentang
+                        checkbox.disabled = true;
+                    }
+                });
+            } else {
+                // Jika validasi gagal, tampilkan pesan kesalahan
+                alert(data.message || 'Validasi item gagal.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memvalidasi item');
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+    const savePengembalianButton = document.getElementById("savePengembalian");
+
+    savePengembalianButton.addEventListener("click", function () {
+        const rows = document.querySelectorAll("tr"); // Pilih semua baris tabel
+        const dataToSubmit = [];
+
+        // Loop melalui setiap baris tabel
+        rows.forEach((row) => {
+            const uuidInput = row.querySelector(".item-uuid"); // Ambil UUID dari input hidden
+            const conditionDropdown = row.querySelector("#item-conditions"); // Dropdown kondisi
+            const checkbox = row.querySelector("[type='checkbox']"); // Checkbox
+
+            if (uuidInput && conditionDropdown && checkbox) {
+                const item_uuid = uuidInput.value; // Ambil nilai UUID
+                const condition = conditionDropdown.value; // Ambil nilai kondisi
+                const isChecked = checkbox.checked; // Ambil status checkbox
+
+                // Masukkan ke dalam array data yang akan dikirim
+                dataToSubmit.push({
+                    item_uuid,
+                    condition,
+                    isChecked,
+                });
+            }
+        });
+
+        // Log hasil data
+        console.log("Data to be submitted:", dataToSubmit);
+
+        fetch("/user/pengembalian/store", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify(dataToSubmit),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Response:", data);
+            alert("Data berhasil dikirim!");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan saat mengirim data.");
+        });
+    });
+});
+
+</script>
 
 @endsection

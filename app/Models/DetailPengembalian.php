@@ -10,12 +10,12 @@ class DetailPengembalian extends Model
     use HasFactory;
 
     protected $table = 'detail_pengembalian';
+//    protected $with = ['barang'];
     protected $fillable = [
         'uuid',
         'kode_detail_pengembalian',
         'kode_pengembalian',
         'kode_barang',
         'status',
-        'deskripsi',
     ];
 }
