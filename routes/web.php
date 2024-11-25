@@ -88,4 +88,7 @@ Route::prefix('user/peminjaman')->group(function () {
 Route::prefix('user/pengembalian')->group(function (){
     Route::get('/', [PengembalianUser::class, 'index'])->name('user.pengembalian.index');
     Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.pengembalian.check');
+    Route::post('/validation', [PengembalianUser::class, 'validateItem'])->name('user.pengembalian.validate');
+    Route::post('/store', [PengembalianUser::class, 'store'])->name('user.pengembalian.store');
+    Route::get('/laporan', [PengembalianUser::class, 'laporan'])->name('user.pengembalian.laporan');
 });
