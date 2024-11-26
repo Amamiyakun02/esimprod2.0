@@ -26,13 +26,14 @@
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <i class="fa-solid fa-file-lines text-gray-500 dark:text-gray-400"></i>
                             </div>
-                           <input type="text" id="nomor-surat"
-                           class="w-full pl-10 p-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-70 dark:text-white"
-                           placeholder="Masukkan Surat Tugas" required>
+                            <input type="text" id="nomor-surat"
+                                   class="w-full pl-10 p-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-70 dark:text-white"
+                                   placeholder="Masukkan Surat Tugas" required>
                         </div>
                     </form>
                 </div>
-                <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                <div
+                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
                     <div class="flex items-center w-full space-x-3 md:w-auto">
                         <div id="date-range-picker" class="flex items-center">
                             <div class="relative">
@@ -136,7 +137,7 @@
 
         {{-- Delete Modal Confirmation --}}
         <div id="popup-modal" tabindex="-1"
-         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
+             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
             <div class="relative p-4 w-full max-w-md">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <button type="button"
@@ -174,7 +175,8 @@
         </div>
 
         {{-- Save Modal Confirmation --}}
-        <div id="save-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
+        <div id="save-modal" tabindex="-1"
+             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
             <div class="relative p-4 w-full max-w-md">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="p-4 md:p-5 text-center flex flex-col items-center">
@@ -191,9 +193,9 @@
                                 Simpan
                             </button>
                             <button data-modal-hide="save-modal" type="button"
-                                        class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                    Tidak
-                                </button>
+                                    class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                Tidak
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -206,7 +208,8 @@
             <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
                 {{-- Modal content --}}
                 <div class="text-center">
-                    <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
+                    <div
+                        class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
                         <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor"
                              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -223,7 +226,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     {{-- button --}}
@@ -239,13 +241,16 @@
             Simpan
         </button>
     </div>
-{{-- Toast Success --}}
+    {{-- Toast Success --}}
     <div id="toast-success-add"
          class="hidden items-center fixed bottom-9 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
          role="alert">
-        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+        <div
+            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                 viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
             </svg>
             <span class="sr-only">Check icon</span>
         </div>
@@ -268,7 +273,7 @@
         <div class="ms-3 text-sm font-normal"></div>
     </div>
 
-{{--    <!-- Toast -->--}}
+    {{--    <!-- Toast -->--}}
     <div id="toast-danger-2"
          class="hidden items-center fixed top-14 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
          role="alert">
@@ -294,7 +299,6 @@
     </div>
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function () {
             const modalTriggers = document.querySelectorAll('[data-modal-toggle="popup-modal"]');
             modalTriggers.forEach(trigger => {
@@ -360,14 +364,14 @@
                             // console.log(data.message);
                             setTimeout(() => {
                                 document.getElementById("toast-success").style.display = "none";
-                            }, 1500); // Hide after 3 seconds
+                            }, 1000);
                         } else {
                             document.querySelector("#toast-warning .text-sm").textContent = data.message; // Set failure message
                             document.getElementById("toast-warning").style.display = "flex"; // Show warning toast
                             // console.log(data.message);
                             setTimeout(() => {
                                 document.getElementById("toast-warning").style.display = "none";
-                            }, 1500);
+                            }, 1000);
                         }
                     })
                     .catch(error => {

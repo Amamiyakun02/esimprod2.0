@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@php use Carbon\Carbon; @endphp
+    <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -115,9 +116,9 @@
             <p><strong>Surat Tugas:</strong> {{ $peminjaman->nomor_surat }}</p>
             <p><strong>Peruntukan:</strong> {{ $peminjaman->peruntukan->peruntukan }}</p>
             <p><strong>Tgl
-                    Penggunaan:</strong> {{ \Carbon\Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}
+                    Penggunaan:</strong> {{ Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}
             </p>
-            <p><strong>Sampai:</strong> {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}</p>
+            <p><strong>Sampai:</strong> {{ Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}</p>
         </div>
         <div class="item">
             <p><strong>Kode:</strong> {{ $peminjaman->kode_peminjaman }}</p>
@@ -166,9 +167,9 @@
             text: kodePeminjaman, // Teks atau URL yang akan dikodekan
             width: 128, // Lebar QR Code
             height: 128, // Tinggi QR Code
-            colorDark : "#000000", // Warna gelap
-            colorLight : "#ffffff", // Warna terang
-            correctLevel : QRCode.CorrectLevel.H // Tingkat koreksi kesalahan
+            colorDark: "#000000", // Warna gelap
+            colorLight: "#ffffff", // Warna terang
+            correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi kesalahan
         };
 
         // Buat QR Code

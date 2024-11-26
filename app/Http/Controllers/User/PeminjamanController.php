@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Barang;
@@ -12,6 +13,7 @@ use App\Models\DetailPeminjaman;
 use Barryvdh\DomPDF\Facade\Pdf as Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
 class PeminjamanController extends Controller
 {
     public function index()
@@ -98,10 +100,10 @@ class PeminjamanController extends Controller
         $borrowTime = time();
         try {
             DB::beginTransaction();
-                // Pastikan data yang dimasukkan sesuai dengan field di database
+            // Pastikan data yang dimasukkan sesuai dengan field di database
             $borrowing = Peminjaman::create([
                 'uuid' => Str::uuid(),
-                'kode_peminjaman' => "PMB-".$borrowTime,
+                'kode_peminjaman' => "PMB-" . $borrowTime,
                 'nomor_surat' => $request->nomor_surat,
                 'peruntukan_id' => $request->peruntukan_id,
                 'tanggal_peminjaman' => $request->tanggal_peminjaman,
@@ -144,8 +146,8 @@ class PeminjamanController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Borrowing saved successfully'
-            ],200);
-        } catch (\Exception $e) {
+            ], 200);
+        } catch (Exception $e) {
             DB::rollback();
             Log::error('Terjadi kesalahan saat menyimpan peminjaman.', [
                 'error' => $e->getMessage(),
@@ -164,7 +166,7 @@ class PeminjamanController extends Controller
         $borrowedItems = session()->get('borrowed_items', []);
 
         // Cari index item berdasarkan 'uuid' dan hapus jika ditemukan
-        $borrowedItems = array_filter($borrowedItems, function($item) use ($uuid) {
+        $borrowedItems = array_filter($borrowedItems, function ($item) use ($uuid) {
             return $item['uuid'] !== $uuid;
         });
         // Simpan kembali ke session
@@ -188,12 +190,11 @@ class PeminjamanController extends Controller
                     'merk' => $dataBarang->merk,
                     'nomor_seri' => $dataBarang->nomor_seri,
                     'status' => $dataBarang->status,
-                    // Tambahkan atribut lain sesuai kebutuhan
                 ];
             }
         }
 
-        return view('user.laporan.index', compact('detailpeminjaman', 'peminjaman', 'barang'));
+        return view('user.laporan.peminjaman.index', compact('detailpeminjaman', 'peminjaman', 'barang'));
     }
 
     public function printDocs()
@@ -227,7 +228,7 @@ class PeminjamanController extends Controller
         ];
 
         // Generate PDF
-        $pdf = Pdf::loadView('user.laporan.paper', $data)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('user.laporan.peminjaman.report', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('laporan-peminjaman-' . time() . '.pdf');
     }
 }
