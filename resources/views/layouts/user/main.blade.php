@@ -38,6 +38,18 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
   <title>@yield('title', 'Default Title')</title>
+    <style>
+        #successModal {
+          opacity: 0;
+          transform: scale(0.9);
+          transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #successModal.visible {
+          opacity: 1;
+          transform: scale(1);
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-neutral-900 flex flex-col min-h-screen">

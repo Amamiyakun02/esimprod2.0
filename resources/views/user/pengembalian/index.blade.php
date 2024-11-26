@@ -15,7 +15,6 @@
     <span class="text-sm text-gray-500 dark:text-gray-400">085386612234</span>
   </div>
 </div>
-
 <!-- Start coding here -->
 <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg mt-3">
   <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -131,6 +130,7 @@
               </td>
               <td>
                 <input type="hidden" name="uuid" value="{{ $item['uuid'] }}" class="item-uuid" id="item-uuid">
+                <input type="hidden" name="kodeBarang" value="{{ $item['kode_barang'] }}" class="item-code" id="item-code">
                 <input id="bordered-checkbox-2" type="checkbox" value="" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" data-code="{{ $item['kode_barang'] }}" disabled>
                 <label for="bordered-checkbox-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
               </td>
@@ -207,6 +207,28 @@
       </div>
     </div>
 
+{{--    Modal Success Pengembalian--}}
+    <div id="successModal" tabindex="-1" aria-hidden="true" class="hidden fixed flex top-0 right-0 left-0 z-50 justify-center items-center w-full h-screen bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {{-- Modal content --}}
+            <div class="text-center">
+                <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
+                    <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor"
+                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Success</span>
+                </div>
+                <p class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Data Pengembalian Berhasil Di Simpan</p>
+                <button id="to_report" type="button" onclick="to_report()"
+                        class="py-2 px-3 text-sm font-medium text-white bg-blue-900 hover:bg-blue-700 rounded-lg focus:ring-4 focus:outline-none dark:focus:ring-primary-900">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
 <script>
     // Scan QR-code
     document.addEventListener('DOMContentLoaded', function () {
@@ -286,25 +308,28 @@
         // Loop melalui setiap baris tabel
         rows.forEach((row) => {
             const uuidInput = row.querySelector(".item-uuid"); // Ambil UUID dari input hidden
+            const codeInput = row.querySelector(".item-code"); // Ambil UUID dari input hidden
             const conditionDropdown = row.querySelector("#item-conditions"); // Dropdown kondisi
             const checkbox = row.querySelector("[type='checkbox']"); // Checkbox
-
             if (uuidInput && conditionDropdown && checkbox) {
                 const item_uuid = uuidInput.value; // Ambil nilai UUID
+                const item_code = codeInput.value; // Ambil nilai UUID
                 const condition = conditionDropdown.value; // Ambil nilai kondisi
                 const isChecked = checkbox.checked; // Ambil status checkbox
 
                 // Masukkan ke dalam array data yang akan dikirim
                 dataToSubmit.push({
                     item_uuid,
+                    item_code,
                     condition,
                     isChecked,
                 });
             }
         });
 
-        // Log hasil data
-        console.log("Data to be submitted:", dataToSubmit);
+        console.log(dataToSubmit);
+        const saveModal = document.getElementById('save-modal');
+        saveModal.classList.add('hidden');
 
         fetch("/user/pengembalian/store", {
             method: "POST",
@@ -317,7 +342,13 @@
         .then((response) => response.json())
         .then((data) => {
             console.log("Response:", data);
-            alert("Data berhasil dikirim!");
+            const successModal = document.getElementById('successModal');
+            successModal.classList.remove('hidden');
+            successModal.classList.add('visible'); // Atau gunakan kelas animasi lainnya
+
+            setTimeout(() => {
+                to_report();
+            },3000)
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -325,6 +356,10 @@
         });
     });
 });
+    function to_report()
+    {
+        window.location.href = '{{ route('user.pengembalian.report') }}';
+    }
 
 </script>
 
