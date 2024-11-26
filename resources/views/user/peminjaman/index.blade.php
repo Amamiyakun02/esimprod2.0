@@ -344,6 +344,7 @@
                         lastScanned = '';
                     }, 100);
                 }
+                // console.log(lastScanned);
             });
 
             function processBarcodeInput(qrcode) {
@@ -361,14 +362,12 @@
                             addItemToTable(data.item);
                             document.querySelector("#toast-success-add .text-sm").textContent = data.message; // Set success message
                             document.getElementById("toast-success-add").style.display = "flex"; // Show success toast
-                            // console.log(data.message);
                             setTimeout(() => {
-                                document.getElementById("toast-success").style.display = "none";
+                                document.getElementById("toast-success-add").style.display = "none";
                             }, 1000);
                         } else {
                             document.querySelector("#toast-warning .text-sm").textContent = data.message; // Set failure message
                             document.getElementById("toast-warning").style.display = "flex"; // Show warning toast
-                            // console.log(data.message);
                             setTimeout(() => {
                                 document.getElementById("toast-warning").style.display = "none";
                             }, 1000);

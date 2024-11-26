@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_kembali');
             $table->string('peminjam');
-            $table->string('petugas');
             $table->string('status');
             $table->foreign('peruntukan_id')->references('id')->on('peruntukan')->onDelete('cascade');
             $table->timestamps();
