@@ -345,10 +345,10 @@
             const successModal = document.getElementById('successModal');
             successModal.classList.remove('hidden');
             successModal.classList.add('visible'); // Atau gunakan kelas animasi lainnya
-
-            setTimeout(() => {
-                to_report();
-            },3000)
+            //
+            // setTimeout(() => {
+            //     to_report();
+            // },3000)
         })
         .catch((error) => {
             console.error("Error:", error);
