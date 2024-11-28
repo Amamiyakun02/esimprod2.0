@@ -12,7 +12,7 @@ use App\Models\DetailPengembalian;
 use App\Models\Barang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+//use Illuminate\Support\Facades\DB;
 
 class PengembalianController extends Controller
 {
@@ -159,21 +159,57 @@ class PengembalianController extends Controller
 
     public function report(Request $request)
     {
-        return view('user.laporan.pengembalian.index');
+//        $detailPengembalian = DetailPengembalian::where('kode_pengembalian', session()->get('PengembalianCode'))->get();
+        $detailPengembalian = DetailPengembalian::where('kode_pengembalian', 'PG1732601005')->get();
+//        $pengembalian = Pengembalian::where('kode_pengembalian', session()->get('PengembalianCode'))->first();
+        $pengembalian = Pengembalian::where('kode_pengembalian', 'PG1732601005')->first();
+        $barangKembali = [];
+        $barangHilang = [];
+
+        foreach ($detailPengembalian as $detail) {
+            if($detail->status != 'hilang') {
+                $dataBarangKembali = Barang::where('kode_barang', $detail->kode_barang)->first();
+
+                if ($dataBarangKembali) {
+                    $barangKembali[] = [
+                        'nama_barang' => $dataBarangKembali->nama_barang,
+                        'merk' => $dataBarangKembali->merk,
+                        'nomor_seri' => $dataBarangKembali->nomor_seri,
+                        'kondisi' => $detail->status,
+                    ];
+                }
+            }
+
+            if($detail->status == 'hilang') {
+                $dataBarangHilang = Barang::where('kode_barang', $detail->kode_barang)->first();
+
+                if ($dataBarangHilang) {
+                    $barangHilang[] = [
+                        'kode_barang' => $dataBarangHilang->kode_barang,
+                        'nama_barang' => $dataBarangHilang->nama_barang,
+                        'merk' => $dataBarangHilang->merk,
+                        'nomor_seri' => $dataBarangHilang->nomor_seri,
+                    ];
+                }
+            }
+        }
+
+        return view('user.laporan.pengembalian.index', compact('detailPengembalian', 'pengembalian','barangKembali', 'barangHilang'));
     }
 
-    public function editDescription(Request $request)
+    public function dest_update(Request $request)
     {
         $validateData = request()->validate([
             'barang' => 'required|array',
+            'barang.*.kode_pengembalian' => 'required|string',
             'barang.*.kode_barang' => 'required|string',
             'barang.*.description' => 'required|string',
         ]);
 
         $updatedRecords = 0;
         foreach ($validateData['barang'] as $barangData) {
-            $detailPengembalian = DetailPengembalian::where('kode_barang', $barangData['kode_barang'])->first();
-
+            $detailPengembalian = DetailPengembalian::where('kode_pengembalian',  $barangData['kode_pengembalian'])->where('kode_barang', $barangData['kode_barang'])->first();
+            Log::info($detailPengembalian);
             if ($detailPengembalian) {
                 $detailPengembalian->description = $barangData['description'];
                 $detailPengembalian->save();

@@ -46,6 +46,13 @@ class PeminjamanController extends Controller
                 'message' => 'Item sudah dipindai sebelumnya.',
             ], 400);
         }
+
+        if($item->status == 'tidak-tersedia'){
+            return response()->json([
+                'success' => false,
+                'message' => 'Item Tidak Tersedia.',
+            ], 400);
+        }
         $response = [
             'success' => !!$item,
             'message' => $item ? 'Barang Telah Ditambahkan.' : 'Barang Tidak Tersedia.',

@@ -115,9 +115,7 @@
         <div class="item">
             <p><strong>Surat Tugas:</strong> {{ $peminjaman->nomor_surat }}</p>
             <p><strong>Peruntukan:</strong> {{ $peminjaman->peruntukan->peruntukan }}</p>
-            <p><strong>Tgl
-                    Penggunaan:</strong> {{ Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}
-            </p>
+            <p><strong>Tgl Penggunaan:</strong> {{ Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}</p>
             <p><strong>Sampai:</strong> {{ Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}</p>
         </div>
         <div class="item">
