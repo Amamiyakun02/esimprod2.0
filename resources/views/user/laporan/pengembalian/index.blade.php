@@ -117,12 +117,12 @@
     </div>
     <div class="above-section">
         <div class="item">
-            <h3 style="font-weight: normal;"><strong>No Peminjaman:</strong> {{ $pengembalian->peminjaman->kode_peminjaman }} 2023-10-0007</h3>
+            <h3 style="font-weight: normal;"><strong>No Peminjaman:</strong> {{ $pengembalian->peminjaman->nomor_peminjaman }}</h3>
             <h3 style="font-weight: normal;"><strong>Kode Pengembalian:</strong> {{ $pengembalian->kode_pengembalian }}</h3>
         </div>
         <div class="item">
-            <h3><strong>Waktu Peminjaman:</strong> 10 Oktober 2023, 19:23 WITA</h3>
-            <h3><strong>Waktu Pengembalian:</strong> 10 Oktober 2023, 19:23 WITA</h3>
+            <h3><strong>Waktu Peminjaman:</strong> {{ Carbon::parse($pengembalian->peminjaman->tanggal_peminjaman)->format('d F Y') }}</h3>
+            <h3><strong>Waktu Pengembalian:</strong>{{ Carbon::parse($pengembalian->tanggal_kembali)->format('d F Y') }}</h3>
         </div>
     </div>
 
@@ -138,7 +138,7 @@
         <p><strong>Surat Tugas:</strong> {{ $pengembalian->peminjaman->nomor_surat }} </p>
         <p><strong>Peruntukan:</strong> {{$pengembalian->peminjaman->peruntukan->peruntukan }} </p>
         <p><strong>Tgl
-            Penggunaan:</strong> {{ Carbon::parse($pengembalian->peminjaman->tanggal_peminjaman)->format('d F Y') }}
+            Penggunaan:</strong> {{ Carbon::parse($pengembalian->peminjaman->tanggal_penggunaan)->format('d F Y') }}
         </p>
         <p><strong>Sampai:</strong> {{ Carbon::parse($pengembalian->peminjaman->tanggal_kembali)->format('d F Y') }} </p>
       </div>
@@ -201,7 +201,7 @@
     <div class="btn-group">
       <a href="{{ route('user.peminjaman.pdf') }}" type="button" class="btn">Download PDF</a>
       {{--      <button class="btn">Cetak</button>--}}
-      <a href="{{ route('options') }}" type="button" class="btn">Selesai</a>
+      <a href="{{ route('user.options') }}" type="button" class="btn">Selesai</a>
       <button id="save-desc" type="button" class="btn">save</button>
     </div>
   </div>

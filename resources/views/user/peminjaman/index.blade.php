@@ -230,7 +230,7 @@
 
     {{-- button --}}
     <div class="flex justify-center space-x-2 mt-4">
-        <a href="/options">
+        <a href="{{route('user.options')}}">
             <button type="button"
                     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                 Kembali
@@ -444,12 +444,12 @@
         async function savePeminjaman() {
             // Ambil nilai dari input form
             const suratTugas = document.getElementById('nomor-surat').value;
-            const tanggalPeminjaman = document.getElementById('tanggal-pinjam').value;
+            const tanggalPenggunaan = document.getElementById('tanggal-pinjam').value;
             const tanggalPengembalian = document.getElementById('tanggal-kembali').value;
             const peruntukanId = document.getElementById('peruntukan').value;
 
             // Validasi input
-            if (!suratTugas || !tanggalPeminjaman || !tanggalPengembalian || !peruntukanId) {
+            if (!suratTugas || !tanggalPenggunaan || !tanggalPengembalian || !peruntukanId) {
 
                 document.querySelector("#toast-danger-2 .text-sm").textContent = data.message; // Set success message
                 document.getElementById("toast-danger-2").style.display = "flex"; // Show success toast
@@ -467,7 +467,7 @@
                 const data = {
                     nomor_surat: suratTugas,
                     peruntukan_id: peruntukanId,
-                    tanggal_peminjaman: tanggalPeminjaman,
+                    tanggal_penggunaan: tanggalPenggunaan,
                     tanggal_kembali: tanggalPengembalian,
                 };
 
@@ -490,7 +490,7 @@
                     // Tombol "Selesai" dalam modal
                     const selesaiButton = document.getElementById('successButton');
                     selesaiButton.addEventListener('click', () => {
-                        window.location.href = '{{ route("user.peminjaman.laporan") }}'; // Redirect ke halaman laporan
+                        window.location.href = '{{ route("user.peminjaman.report") }}'; // Redirect ke halaman laporan
                     });
                 } else {
                     document.querySelector("#toast-danger-2 .text-sm").textContent = data.message; // Set failure message
@@ -512,7 +512,7 @@
             e.preventDefault(); // Mencegah form submit default
             savePeminjaman();
         });
-        ocument.getElementById('tanggal-pinjam').addEventListener('change', function () {
+        document.getElementById('tanggal-pinjam').addEventListener('change', function () {
             const tanggalKembali = document.getElementById('tanggal-kembali');
             tanggalKembali.min = this.value; // Set minimum tanggal kembali
         });

@@ -19,7 +19,7 @@ class PengembalianController extends Controller
     public function index()
     {
         if (!session()->has('peminjamanCode')) {
-            return redirect('options');
+            return redirect()->route('user.options');
         }
 
         $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', session()->get('peminjamanCode'))->get();
@@ -95,10 +95,10 @@ class PengembalianController extends Controller
             // Simpan data Pengembalian
             $pengembalian = Pengembalian::create([
                 'uuid' => Str::uuid(),
-                'kode_pengembalian' => 'PG' . time(),
+                'kode_pengembalian' => 'PG-' . time(),
                 'kode_peminjaman' => session()->get('peminjamanCode'),
                 'tanggal_kembali' => now(),
-                'petugas' => 'admin',
+                'status' => 'incomplete',
                 'peminjam' => 'uuid',
             ]);
 
@@ -115,6 +115,7 @@ class PengembalianController extends Controller
                 ]);
             }
 
+            session()->put('kodePengembalian', $pengembalian->kode_pengembalian);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data pengembalian berhasil disimpan',
@@ -157,12 +158,14 @@ class PengembalianController extends Controller
         ], 404);
     }
 
-    public function report(Request $request)
+    public function report()
     {
-//        $detailPengembalian = DetailPengembalian::where('kode_pengembalian', session()->get('PengembalianCode'))->get();
-        $detailPengembalian = DetailPengembalian::where('kode_pengembalian', 'PG1732601005')->get();
-//        $pengembalian = Pengembalian::where('kode_pengembalian', session()->get('PengembalianCode'))->first();
-        $pengembalian = Pengembalian::where('kode_pengembalian', 'PG1732601005')->first();
+        if(!session()->has('kodePengembalian')){
+            return redirect()->route('user.options');
+        }
+        $kodePengembalian = session()->get('kodePengembalian');
+        $detailPengembalian = DetailPengembalian::where('kode_pengembalian',$kodePengembalian)->get();
+        $pengembalian = Pengembalian::where('kode_pengembalian', $kodePengembalian)->first();
         $barangKembali = [];
         $barangHilang = [];
 
@@ -228,8 +231,8 @@ class PengembalianController extends Controller
         }
     }
 
-    public function print(Request $request)
+    public function printReport()
     {
-
+        return view('user.laporan.pengembalian.print');
     }
 }

@@ -115,7 +115,7 @@
         <div class="item">
             <p><strong>Surat Tugas:</strong> {{ $peminjaman->nomor_surat }}</p>
             <p><strong>Peruntukan:</strong> {{ $peminjaman->peruntukan->peruntukan }}</p>
-            <p><strong>Tgl Penggunaan:</strong> {{ Carbon::parse($peminjaman->tanggal_peminjaman)->format('d F Y') }}</p>
+            <p><strong>Tgl Penggunaan:</strong> {{ Carbon::parse($peminjaman->tanggal_penggunaan)->format('d F Y') }}</p>
             <p><strong>Sampai:</strong> {{ Carbon::parse($peminjaman->tanggal_kembali)->format('d F Y') }}</p>
         </div>
         <div class="item">
@@ -151,7 +151,7 @@
     <div class="btn-group">
         <a href="{{ route('user.peminjaman.pdf') }}" type="button" class="btn">Download PDF</a>
         {{--      <button class="btn">Cetak</button>--}}
-        <a href="{{ route('options') }}" type="button" class="btn">Selesai</a>
+        <a href="{{ route('user.options') }}" type="button" class="btn">Selesai</a>
     </div>
 </div>
 <!-- Pastikan QRCode.js sudah disertakan sebelum skrip ini -->

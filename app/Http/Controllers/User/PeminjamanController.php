@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Barang;
 use App\Models\Peruntukan;
@@ -31,13 +32,8 @@ class PeminjamanController extends Controller
         ]);
 
         Log::info("Scanned itemcode:", $validatedData);
-
-        // Ambil item berdasarkan QR code dari database
         $item = $this->findItemByQrcode($validatedData['qrcode']);
-
-        // Ambil daftar item yang sudah dipindai dari session
         $borrowedItems = session()->get('borrowed_items', []);
-
         // Cek apakah item sudah ada di session
         if ($item && collect($borrowedItems)->contains('uuid', $item->uuid)) {
             // Jika item sudah ada, kirimkan response error
@@ -50,7 +46,7 @@ class PeminjamanController extends Controller
         if($item->status == 'tidak-tersedia'){
             return response()->json([
                 'success' => false,
-                'message' => 'Item Tidak Tersedia.',
+                'message' => 'Barang Tidak dapat Di Pinjam.',
             ], 400);
         }
         $response = [
@@ -83,7 +79,7 @@ class PeminjamanController extends Controller
 
     protected function findItemByQrcode(string $qrcode)
     {
-        return Barang::where('kode_barang', $qrcode)->first(); // Replace with your logic
+        return Barang::where('kode_barang', $qrcode)->first();
     }
 
     public function store(Request $request)
@@ -92,7 +88,7 @@ class PeminjamanController extends Controller
         $validatedData = $request->validate([
             'peruntukan_id' => 'required|integer|exists:peruntukan,id',
             'nomor_surat' => 'required|string|max:255',  // Sesuaikan dengan field yang dikirim
-            'tanggal_peminjaman' => 'required|date|after_or_equal:today',
+            'tanggal_penggunaan' => 'required|date|after_or_equal:today',
             'tanggal_kembali' => 'required|date|after:tanggal_peminjaman',
         ]);
 
@@ -105,21 +101,27 @@ class PeminjamanController extends Controller
             ], 400);
         }
         $borrowTime = time();
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->format('m');
         try {
             DB::beginTransaction();
             // Pastikan data yang dimasukkan sesuai dengan field di database
             $borrowing = Peminjaman::create([
                 'uuid' => Str::uuid(),
                 'kode_peminjaman' => "PMB-" . $borrowTime,
+                "nomor_peminjaman" => '0',
                 'nomor_surat' => $request->nomor_surat,
                 'peruntukan_id' => $request->peruntukan_id,
-                'tanggal_peminjaman' => $request->tanggal_peminjaman,
+                'tanggal_penggunaan' => $request->tanggal_penggunaan,
+                'tanggal_peminjaman' => now(),
                 'tanggal_kembali' => $request->tanggal_kembali,
                 'peminjam' => auth()->user()->name ?? "reza", // Gunakan user yang terautentikasi
                 'petugas' => 'akmal',
                 'status' => 'pending'
             ]);
-
+            $borrowing->update([
+                'npmor_peminjaman' => $currentYear . '-' . $currentMonth . '-' . str_pad($borrowing->id, 4, '0', STR_PAD_LEFT)
+            ]);
             // Create borrowing details
             foreach ($borrowedItems as $item) {
                 DetailPeminjaman::create([
@@ -127,7 +129,6 @@ class PeminjamanController extends Controller
                     'kode_detail_peminjaman' => $borrowing->kode_peminjaman . $borrowTime . $item['kode_barang'],
                     'kode_peminjaman' => $borrowing->kode_peminjaman,
                     'kode_barang' => $item['kode_barang'],
-
                 ]);
 
                 // Update item availability
@@ -135,10 +136,8 @@ class PeminjamanController extends Controller
 
                 if ($updatedItem) {
                     $newLimit = $updatedItem->sisa_limit - 1;
-
                     // Update sisa_limit
                     $updatedItem->update(['sisa_limit' => $newLimit]);
-
                     // Check if sisa_limit == 0
                     if ($newLimit == 0) {
                         $updatedItem->update(['status' => 'tidak-tersedia']);
@@ -149,7 +148,7 @@ class PeminjamanController extends Controller
             // Clear session
             session()->forget('borrowed_items');
             DB::commit();
-            session()->put('nomor_peminjaman', $borrowing->kode_peminjaman);
+            session()->put('kodePeminjaman', $borrowing->kode_peminjaman);
             return response()->json([
                 'success' => true,
                 'message' => 'Borrowing saved successfully'
@@ -182,10 +181,11 @@ class PeminjamanController extends Controller
         return response()->json(['success' => true, 'message' => 'Item berhasil dihapus']);
     }
 
-    public function laporan()
+    public function report()
     {
-        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->get();
-        $peminjaman = Peminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->first();
+        $kodePeminjaman = session()->get('kodePeminjaman');
+        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', $kodePeminjaman)->get();
+        $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)->first();
         $barang = [];
         foreach ($detailpeminjaman as $detail) {
             // Ambil data barang berdasarkan kode_barang
@@ -204,17 +204,11 @@ class PeminjamanController extends Controller
         return view('user.laporan.peminjaman.index', compact('detailpeminjaman', 'peminjaman', 'barang'));
     }
 
-    public function printDocs()
+    public function printReport()
     {
-        $kodePeminjaman = session()->get('nomor_peminjaman');
-
-        // Ambil data peminjaman
+        $kodePeminjaman = session()->get('kodePeminjaman');
         $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)->first();
-
-        // Ambil detail peminjaman
         $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', $kodePeminjaman)->get();
-
-        // Ambil data barang berdasarkan detail peminjaman
         $barang = [];
         foreach ($detailpeminjaman as $detail) {
             $dataBarang = Barang::where('kode_barang', $detail->kode_barang)->first();
