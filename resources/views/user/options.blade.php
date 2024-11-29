@@ -12,7 +12,7 @@
     <link rel="shortcut icon" href="{{ asset('/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('fa/css/all.min.css') }}">
     <link href="https://db.onlinewebfonts.com/c/7dd5f4bf5d38875ca1822a830b6e6fe4?family=Aptos" rel="stylesheet">
-    <title>Opsi Login</title>
+    <title>ESIMPROD | PEMINJAMAN & PENGEMBALIAN </title>
 </head>
 
 <body style="background-color: #156082;" class=" dark:bg-neutral-900 flex flex-col min-h-screen">

@@ -1,6 +1,6 @@
 @extends('layouts.user.main')
 
-@section('title', 'Pengembalian')
+@section('title', 'ESIMPROD | PENGEMBALIAN')
 
 @section('content')
 

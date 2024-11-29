@@ -1,6 +1,6 @@
 @extends('layouts.user.main')
 
-@section('title', 'Peminjaman')
+@section('title', 'ESIMPROD | PEMINJAMAN')
 
 
 {{-- Now --}}
