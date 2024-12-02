@@ -17,5 +17,6 @@ class DetailPengembalian extends Model
         'kode_pengembalian',
         'kode_barang',
         'status',
+        'deskripsi',
     ];
 }

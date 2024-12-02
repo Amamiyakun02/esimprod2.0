@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\DetailPeminjaman;
+use Exception;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
@@ -11,16 +12,19 @@ use App\Models\DetailPengembalian;
 use App\Models\Barang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\DB;
+
 class PengembalianController extends Controller
 {
     public function index()
     {
-        if(!session()->has('nomor_peminjaman')){
-            return redirect('options');
+        if (!session()->has('kodePeminjaman')) {
+            return redirect()->route('user.option');
         }
 
-        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->get();
-        $peminjaman = Peminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->first();
+        $kodePeminjaman = session('kodePeminjaman');
+        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', $kodePeminjaman)->get();
+        $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)->first();
         $barang = [];
         foreach ($detailpeminjaman as $detail) {
             // Ambil data barang berdasarkan kode_barang
@@ -34,6 +38,7 @@ class PengembalianController extends Controller
                     'kode_barang' => $dataBarang->kode_barang,
                     'nomor_seri' => $dataBarang->nomor_seri,
                     'status' => $dataBarang->status,
+                    'isChecked' => false,
                     // Tambahkan atribut lain sesuai kebutuhan
                 ];
             }
@@ -59,53 +64,74 @@ class PengembalianController extends Controller
         $peminjaman = Peminjaman::where('kode_peminjaman', $request->code)->first();
 
         if ($peminjaman) {
-            // Response jika kode ditemukan
+            session()->put('kodePeminjaman', $peminjaman->kode_peminjaman);
             return response()->json([
                 'success' => true,
-                'message' => 'Kode ditemukan, silakan lakukan pengembalian.',
-                'redirect_url' => route('user.pengembalian.index')
+                'message' => ' silakan lakukan pengembalian.',
             ], 200);
         }
-
         // Response jika kode tidak ditemukan
         return response()->json([
             'success' => false,
             'message' => 'Kode tidak ditemukan.'
         ], 404);
     }
+
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'kode_peminjaman' => 'required|exists:peminjaman,kode_peminjaman',
-            'tanggal_kembali' => 'required|date',
-            'petugas' => 'required|string|max:255',
-            'peminjam' => 'required|string|max:255',
-            'detail_barang' => 'required|array',
-            'detail_barang.*.kode_barang' => 'required|exists:barang,kode_barang',
-            'detail_barang.*.status' => 'required|in:baik,rusak,hilang',
-        ]);
-
-        // Simpan data Pengembalian
-        $pengembalian = Pengembalian::create([
-            'uuid' => Str::uuid(),
-            'kode_pengembalian' => 'PG' . time(), // Bisa diubah sesuai format yang diinginkan
-            'kode_peminjaman' => $validatedData['kode_peminjaman'],
-            'tanggal_kembali' => $validatedData['tanggal_kembali'],
-            'petugas' => $validatedData['petugas'],
-            'peminjam' => $validatedData['peminjam'],
-        ]);
-
-        // Simpan data DetailPengembalian
-        foreach ($validatedData['detail_barang'] as $barang) {
-            DetailPengembalian::create([
-                'uuid' => Str::uuid(),
-                'kode_detail_pengembalian' => 'DPG' . Str::random(8), // Bisa diubah sesuai format
-                'kode_pengembalian' => $pengembalian->kode_pengembalian,
-                'kode_barang' => $barang['kode_barang'],
-                'status' => $barang['status'],
+//        DB::beginTransaction();
+        try {
+            $request->validate([
+                '*.item_uuid' => 'required|string',
+                '*.item_code' => 'required|string',
+                '*.condition' => 'required|',
+                '*.isChecked' => 'required|boolean',
             ]);
+
+            // Proses data yang sudah valid
+            $valData = $request->all();
+            $dataPeminjaman = session('dataPeminjaman');
+            Log::info($dataPeminjaman);
+
+            // Simpan data Pengembalian
+            $pengembalian = Pengembalian::create([
+                'uuid' => Str::uuid(),
+                'kode_pengembalian' => 'PG-' . time(),
+                'kode_peminjaman' => session()->get('kodePeminjaman'),
+                'tanggal_kembali' => now(),
+                'status' => 'incomplete',
+                'peminjam' => 'uuid',
+            ]);
+
+            Log::info($pengembalian);
+            // Simpan data DetailPengembalian
+            foreach ($valData as $item) {
+                DetailPengembalian::create([
+                    'uuid' => Str::uuid(),
+                    'kode_detail_pengembalian' => 'DPG' . Str::random(8),
+                    'kode_pengembalian' => $pengembalian->kode_pengembalian,
+                    'kode_barang' => $item['item_code'],
+                    'status' => $item['isChecked'] ? $item['condition'] : 'hilang',
+                    'deskripsi' => $item['isChecked'] ? 'Barang Telah Dikembalikan': null,
+                ]);
+            }
+
+            session()->put('kodePengembalian', $pengembalian->kode_pengembalian);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data pengembalian berhasil disimpan',
+            ], 200);
+        } catch (Exception $e) {
+//            DB::rollBack();
+            Log::error($e);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data pengembalian',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
+
     public function validateItem(Request $request)
     {
         $request->validate([
@@ -132,15 +158,82 @@ class PengembalianController extends Controller
             'message' => 'Gagal Validasi.'
         ], 404);
     }
-    public function report(Request $request)
+
+    public function report()
     {
+        if(!session()->has('kodePengembalian')){
+            return redirect()->route('user.options');
+        }
+        $kodePengembalian = session()->get('kodePengembalian');
+        $detailPengembalian = DetailPengembalian::where('kode_pengembalian',$kodePengembalian)->get();
+        $pengembalian = Pengembalian::where('kode_pengembalian', $kodePengembalian)->first();
+        $barangKembali = [];
+        $barangHilang = [];
 
-    }
-    public function editDescription(Request $request){
+        foreach ($detailPengembalian as $detail) {
+            if($detail->status != 'hilang') {
+                $dataBarangKembali = Barang::where('kode_barang', $detail->kode_barang)->first();
 
+                if ($dataBarangKembali) {
+                    $barangKembali[] = [
+                        'nama_barang' => $dataBarangKembali->nama_barang,
+                        'merk' => $dataBarangKembali->merk,
+                        'nomor_seri' => $dataBarangKembali->nomor_seri,
+                        'kondisi' => $detail->status,
+                    ];
+                }
+            }
+
+            if($detail->status == 'hilang') {
+                $dataBarangHilang = Barang::where('kode_barang', $detail->kode_barang)->first();
+
+                if ($dataBarangHilang) {
+                    $barangHilang[] = [
+                        'kode_barang' => $dataBarangHilang->kode_barang,
+                        'nama_barang' => $dataBarangHilang->nama_barang,
+                        'merk' => $dataBarangHilang->merk,
+                        'nomor_seri' => $dataBarangHilang->nomor_seri,
+                    ];
+                }
+            }
+        }
+
+        return view('user.laporan.pengembalian.index', compact('detailPengembalian', 'pengembalian','barangKembali', 'barangHilang'));
     }
-    public function print(Request $request)
+
+    public function dest_update(Request $request)
     {
+        $validateData = request()->validate([
+            'barang' => 'required|array',
+            'barang.*.kode_pengembalian' => 'required|string',
+            'barang.*.kode_barang' => 'required|string',
+            'barang.*.description' => 'required|string',
+        ]);
 
+        $updatedRecords = 0;
+        foreach ($validateData['barang'] as $barangData) {
+            $detailPengembalian = DetailPengembalian::where('kode_pengembalian',  $barangData['kode_pengembalian'])->where('kode_barang', $barangData['kode_barang'])->first();
+            Log::info($detailPengembalian);
+            if ($detailPengembalian) {
+                $detailPengembalian->description = $barangData['description'];
+                $detailPengembalian->save();
+                $updatedRecords++;
+            }
+        }
+
+        if ($updatedRecords > 0) {
+            return response()->json([
+                'message' => 'Deskripsi barang berhasil diubah'
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Tidak ada barang yang ditemukan'
+            ], 404);
+        }
+    }
+
+    public function printReport()
+    {
+        return view('user.laporan.pengembalian.print');
     }
 }

@@ -117,60 +117,153 @@
 </body>
 
 <script>
-// Wait for the modal to be shown, then focus the input field
-const modal = document.getElementById('scan-modal');
-const input = document.getElementsByTagName('input');
-const errorMessage = document.getElementById('error-message');
-errorMessage.textContent = '';
-errorMessage.classList.add('hidden');
-// When modal opens
-modal.addEventListener('show', function() {
-  input.focus();
-});
-
-// Or, if Flowbite's modal doesn't have a 'show' event, use this:
-// Listen for the modal toggle
-const modalToggleButton = document.querySelector('[data-modal-toggle="scan-modal"]');
-modalToggleButton.addEventListener('click', function() {
-  setTimeout(() => {
-    input.focus(); // Ensure focus after modal animation completes
-  }, 200); // Wait a little bit to make sure the modal has fully opened
-});
-
-document.getElementById('confirm').addEventListener('click', function () {
-    const code = document.getElementById('code').value;
-
-    // Validasi input sebelum mengirim request
-    if (!code) {
-        errorMessage.textContent = 'Kode peminjaman tidak boleh kosong!';
-        errorMessage.classList.remove('hidden');
-        return;
-    }
-
-    fetch('/user/pengembalian/check', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+// Configuration Constants
+    const CONFIG = {
+        API_ENDPOINTS: {
+            CHECK_CODE: '/user/pengembalian/check'
         },
-        body: JSON.stringify({ code })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Kode ditemukan! ' + data.message);
-            // Redirect jika diperlukan
-            window.location.href = data.redirect_url;
-        } else {
-            errorMessage.textContent = data.message;
-            errorMessage.classList.remove('hidden');        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        errorMessage.textContent = 'Terjadi kesalahan: Tidak dapat terhubung ke server.';
-        errorMessage.classList.remove('hidden');
+        MODAL_FOCUS_DELAY: 200,
+        ERROR_MESSAGES: {
+            EMPTY_CODE: 'Kode peminjaman tidak boleh kosong!',
+            SERVER_ERROR: 'Terjadi kesalahan: Tidak dapat terhubung ke server.'
+        }
+    };
+
+    // Utility Functions
+    const Utils = {
+        getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        },
+        showError(errorElement, message) {
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        },
+        hideError(errorElement) {
+            errorElement.textContent = '';
+            errorElement.classList.add('hidden');
+        }
+    };
+
+    // Scan Modal Management
+    const ScanModalManager = {
+        elements: {
+            modal: null,
+            input: null,
+            errorMessage: null,
+            confirmButton: null,
+            modalToggleButton: null
+        },
+
+        init() {
+            // Cache DOM elements
+            this.elements.modal = document.getElementById('scan-modal');
+            this.elements.input = document.getElementById('code');
+            this.elements.errorMessage = document.getElementById('error-message');
+            this.elements.confirmButton = document.getElementById('confirm');
+            this.elements.modalToggleButton = document.querySelector('[data-modal-toggle="scan-modal"]');
+
+            // Initialize error message
+            Utils.hideError(this.elements.errorMessage);
+
+            // Set up event listeners
+            this.setupModalFocusListeners();
+            this.setupConfirmButtonListener();
+        },
+
+        setupModalFocusListeners() {
+            // Attempt to use native modal show event
+            if (this.elements.modal.addEventListener) {
+                this.elements.modal.addEventListener('show', () => {
+                    this.focusInput();
+                });
+            }
+
+            // Fallback for modal toggle
+            if (this.elements.modalToggleButton) {
+                this.elements.modalToggleButton.addEventListener('click', () => {
+                    setTimeout(() => {
+                        this.focusInput();
+                    }, CONFIG.MODAL_FOCUS_DELAY);
+                });
+            }
+        },
+
+        focusInput() {
+            if (this.elements.input) {
+                this.elements.input.focus();
+            }
+        },
+
+        setupConfirmButtonListener() {
+            this.elements.confirmButton.addEventListener('click', () => {
+                this.handleCodeConfirmation();
+            });
+        },
+
+        handleCodeConfirmation() {
+            // Reset error state
+            Utils.hideError(this.elements.errorMessage);
+
+            const code = this.elements.input.value.trim();
+
+            // Validate input
+            if (!code) {
+                Utils.showError(
+                    this.elements.errorMessage,
+                    CONFIG.ERROR_MESSAGES.EMPTY_CODE
+                );
+                return;
+            }
+
+            // Send validation request
+            this.validateCode(code);
+        },
+
+        async validateCode(code) {
+            try {
+                const response = await fetch(CONFIG.API_ENDPOINTS.CHECK_CODE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': Utils.getCsrfToken()
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await response.json();
+                this.handleValidationResponse(data);
+            } catch (error) {
+                this.handleValidationError(error);
+            }
+        },
+
+        handleValidationResponse(data) {
+            if (data.success) {
+                // Success scenario
+                alert('Kode ditemukan! ' + data.message);
+                window.location.href = 'pengembalian';
+            } else {
+                // Validation failed
+                Utils.showError(
+                    this.elements.errorMessage,
+                    data.message
+                );
+            }
+        },
+
+        handleValidationError(error) {
+            console.error('Error:', error);
+            Utils.showError(
+                this.elements.errorMessage,
+                CONFIG.ERROR_MESSAGES.SERVER_ERROR
+            );
+        }
+    };
+
+    // Initialize on DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+        ScanModalManager.init();
     });
-});
 
 </script>
 

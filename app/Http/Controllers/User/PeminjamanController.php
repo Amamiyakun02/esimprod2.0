@@ -18,7 +18,6 @@ class PeminjamanController extends Controller
     {
         $peruntukanData = Peruntukan::all();
         $borrowedItems = session()->get('borrowed_items', []);
-//         session()->forget('borrowed_items');
         return view('user.peminjaman.index', compact('borrowedItems', 'peruntukanData'));
     }
 
@@ -83,7 +82,7 @@ class PeminjamanController extends Controller
         $validatedData = $request->validate([
             'peruntukan_id' => 'required|integer|exists:peruntukan,id',
             'nomor_surat' => 'required|string|max:255',  // Sesuaikan dengan field yang dikirim
-            'tanggal_peminjaman' => 'required|date|after_or_equal:today',
+            'tanggal_penggunaan' => 'required|date|after_or_equal:today',
             'tanggal_kembali' => 'required|date|after:tanggal_peminjaman',
         ]);
 
@@ -103,11 +102,13 @@ class PeminjamanController extends Controller
                 'uuid' => Str::uuid(),
                 'kode_peminjaman' => "PMB-".$borrowTime,
                 'nomor_surat' => $request->nomor_surat,
+                'nomor_peminjaman' => 'azfoafghaeigog',
                 'peruntukan_id' => $request->peruntukan_id,
-                'tanggal_peminjaman' => $request->tanggal_peminjaman,
+                'tanggal_penggunaan' => $request->tanggal_penggunaan,
+                'tanggal_peminjaman' => now(),
                 'tanggal_kembali' => $request->tanggal_kembali,
+                'qr_code' => null,
                 'peminjam' => auth()->user()->name ?? "reza", // Gunakan user yang terautentikasi
-                'petugas' => 'akmal',
                 'status' => 'pending'
             ]);
 
@@ -140,7 +141,7 @@ class PeminjamanController extends Controller
             // Clear session
             session()->forget('borrowed_items');
             DB::commit();
-            session()->put('nomor_peminjaman', $borrowing->kode_peminjaman);
+            session()->put('kodePeminjaman', $borrowing->kode_peminjaman);
             return response()->json([
                 'success' => true,
                 'message' => 'Borrowing saved successfully'
@@ -173,10 +174,14 @@ class PeminjamanController extends Controller
         return response()->json(['success' => true, 'message' => 'Item berhasil dihapus']);
     }
 
-    public function laporan()
+    public function report()
     {
-        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->get();
-        $peminjaman = Peminjaman::where('kode_peminjaman', session()->get('nomor_peminjaman'))->first();
+        if(!session()->has('kodePeminjaman')) {
+            return redirect()->route('user.option');
+        }
+        $kodePeminjaman = session()->get('kodePeminjaman');
+        $detailpeminjaman = DetailPeminjaman::where('kode_peminjaman', $kodePeminjaman)->get();
+        $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)->first();
         $barang = [];
         foreach ($detailpeminjaman as $detail) {
             // Ambil data barang berdasarkan kode_barang
@@ -188,18 +193,19 @@ class PeminjamanController extends Controller
                     'merk' => $dataBarang->merk,
                     'nomor_seri' => $dataBarang->nomor_seri,
                     'status' => $dataBarang->status,
-                    // Tambahkan atribut lain sesuai kebutuhan
                 ];
             }
         }
 
-        return view('user.laporan.index', compact('detailpeminjaman', 'peminjaman', 'barang'));
+        return view('user.laporan.peminjaman.index', compact('detailpeminjaman', 'peminjaman', 'barang'));
     }
 
-    public function printDocs()
+    public function printReport()
     {
-        $kodePeminjaman = session()->get('nomor_peminjaman');
-
+        if(!session()->has('kodePeminjaman')) {
+            return redirect()->route('user.option');
+        }
+        $kodePeminjaman = session()->get('kodePeminjaman');
         // Ambil data peminjaman
         $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)->first();
 
@@ -219,7 +225,6 @@ class PeminjamanController extends Controller
                 ];
             }
         }
-
         // Siapkan data untuk view
         $data = [
             'peminjaman' => $peminjaman,
@@ -227,7 +232,7 @@ class PeminjamanController extends Controller
         ];
 
         // Generate PDF
-        $pdf = Pdf::loadView('user.laporan.paper', $data)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('user.laporan.report', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('laporan-peminjaman-' . time() . '.pdf');
     }
 }

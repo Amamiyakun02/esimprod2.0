@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Peminjaman;
 use Illuminate\Support\Facades\Route;
 
 
@@ -11,7 +12,7 @@ use App\Http\Controllers\Admin\PerawatanController;
 use App\Http\Controllers\Admin\PeminjamanController;
 use App\Http\Controllers\Admin\JenisBarangController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\OptionsController;
+use App\Http\Controllers\User\OptionsController;
 use App\Http\Controllers\User\PeminjamanController as PeminjamanUser;
 use App\Http\Controllers\User\PengembalianController as PengembalianUser;
 
@@ -23,8 +24,6 @@ Route::prefix('/')->group(function () {
     Route::post('/password', [AuthController::class, 'passwordValidation'])->name('password.validation');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-Route::get('/options', [OptionsController::class, 'index'])->name('options');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -76,19 +75,29 @@ Route::prefix('peminjaman')->group(function () {
     Route::get('/', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 });
 
+
+//Route Opsi
+Route::prefix('user/option')->group(function () {
+    Route::get('/', [OptionsController::class, 'index'])->name('user.option');
+});
+
+//Route Peminjaman User
 Route::prefix('user/peminjaman')->group(function () {
     Route::get('/', [PeminjamanUser::class, 'index'])->name('user.peminjaman.index');
     Route::post('/scan', [PeminjamanUser::class, 'scan'])->name('user.peminjaman.scan');
     Route::delete('/remove/{uuid}', [PeminjamanUser::class, 'removeItem'])->name('user.peminjaman.remove');
     Route::post('/store', [PeminjamanUser::class, 'store'])->name('user.peminjaman.store');
-    Route::get('/laporan', [PeminjamanUser::class, 'laporan'])->name('user.peminjaman.laporan');
-    Route::get('/pdf', [PeminjamanUser::class, 'printDocs'])->name('user.peminjaman.pdf');
+    Route::get('/report', [PeminjamanUser::class, 'report'])->name('user.peminjaman.report');
+    Route::get('/pdf', [PeminjamanUser::class, 'printReport'])->name('user.peminjaman.pdf');
 });
 
-Route::prefix('user/pengembalian')->group(function (){
+//Route Pengembalian User
+Route::prefix('user/pengembalian')->group(function () {
     Route::get('/', [PengembalianUser::class, 'index'])->name('user.pengembalian.index');
     Route::post('/check', [PengembalianUser::class, 'checkPeminjaman'])->name('user.pengembalian.check');
-    Route::post('/validation', [PengembalianUser::class, 'validateItem'])->name('user.pengembalian.validate');
+    Route::post('/validation', [PengembalianUser::class, 'validateItem'])->name('user.pengembalian.validation');
     Route::post('/store', [PengembalianUser::class, 'store'])->name('user.pengembalian.store');
-    Route::get('/laporan', [PengembalianUser::class, 'laporan'])->name('user.pengembalian.laporan');
+    Route::get('/report', [PengembalianUser::class, 'report'])->name('user.pengembalian.report');
+    Route::put('/update_desc', [PengembalianUser::class, 'desc_update'])->name('user.pengembalian.update_desc');
+//    route::get('/pdf', [PengembalianUser::class, 'printReport'])->name('user.pengembalian.pdf');
 });

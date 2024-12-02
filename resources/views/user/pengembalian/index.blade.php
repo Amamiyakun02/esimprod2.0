@@ -1,6 +1,6 @@
 @extends('layouts.user.main')
 
-@section('title', 'Pengembalian')
+@section('title', 'ESIMPROD | PENGEMBALIAN')
 
 @section('content')
 
@@ -15,7 +15,6 @@
     <span class="text-sm text-gray-500 dark:text-gray-400">085386612234</span>
   </div>
 </div>
-
 <!-- Start coding here -->
 <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg mt-3">
   <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -131,6 +130,7 @@
               </td>
               <td>
                 <input type="hidden" name="uuid" value="{{ $item['uuid'] }}" class="item-uuid" id="item-uuid">
+                <input type="hidden" name="kodeBarang" value="{{ $item['kode_barang'] }}" class="item-code" id="item-code">
                 <input id="bordered-checkbox-2" type="checkbox" value="" name="bordered-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" data-code="{{ $item['kode_barang'] }}" disabled>
                 <label for="bordered-checkbox-2" class="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"></label>
               </td>
@@ -141,7 +141,7 @@
 </div>
 </div>
 <div class="flex justify-center space-x-2 mt-4">
-  <a href="{{ route('options') }}" type="button"
+  <a href="{{ route('user.option') }}" type="button"
     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Kembali</a>
   <button type="button" data-modal-target="save-modal" data-modal-toggle="save-modal"
     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Simpan</button>
@@ -207,123 +207,202 @@
       </div>
     </div>
 
+{{--    Modal Success Pengembalian--}}
+    <div id="successModal" tabindex="-1" aria-hidden="true" class="hidden fixed flex top-0 right-0 left-0 z-50 justify-center items-center w-full h-screen bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
+            {{-- Modal content --}}
+            <div class="text-center">
+                <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
+                    <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor"
+                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="sr-only">Success</span>
+                </div>
+                <p class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Data Pengembalian Berhasil Di Simpan</p>
+                <button id="to_report" type="button" onclick="redirectToReport()"
+                        class="py-2 px-3 text-sm font-medium text-white bg-blue-900 hover:bg-blue-700 rounded-lg focus:ring-4 focus:outline-none dark:focus:ring-primary-900">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
 <script>
-    // Scan QR-code
-    document.addEventListener('DOMContentLoaded', function () {
-        let kodeBarangScanned = '';
-        let lastScannedTimeout;
+// Configuration Constants
+const CONFIG = {
+    API_ENDPOINTS: {
+        VALIDATE_ITEM: '/user/pengembalian/validation',
+        STORE_RETURN: '/user/pengembalian/store'
+    },
+    ANIMATION_DURATION: 1000,
+    SCANNER_INPUT_TIMEOUT: 100
+};
 
-        let checkbox = document.getElementById('bordered-checkbox-2');
+// Utility Functions
+const Utils = {
+    getCsrfToken() {
+        return document.querySelector('meta[name="csrf-token"]').content;
+    },
+    showAlert(message) {
+        alert(message);
+    },
+    logError(error) {
+        console.error('Error:', error);
+    }
+};
 
-        let dataCode = checkbox.getAttribute('data-code');
+// Return Item Management
+const ReturnItemManager = {
+    scanHandler: {
+        init() {
+            let kodeBarangScanned = '';
+            let lastScannedTimeout;
 
-        document.addEventListener('keydown', function (e) {
-            if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
+            document.addEventListener('keydown', (e) => {
+                if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
 
-            if (e.key === 'Enter') {
-                if (kodeBarangScanned) {
-                    validatingItem(kodeBarangScanned);
-                    kodeBarangScanned = '';
-                    clearTimeout(lastScannedTimeout);
-                }
-            } else {
-                kodeBarangScanned += e.key;
-                clearTimeout(lastScannedTimeout);
-                lastScannedTimeout = setTimeout(() => {
-                    kodeBarangScanned = '';
-                }, 100);
-            }
-        });
-    });
-    async function validatingItem(itemCode) {
-        try {
-            const response = await fetch('/user/pengembalian/validation', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({ itemCode: itemCode })
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                let checkboxes = document.querySelectorAll('[data-code]');
-
-                checkboxes.forEach((checkbox) => {
-                    if (checkbox.getAttribute('data-code') === itemCode) {
-                        checkbox.checked = true;
-                        const row = checkbox.closest('tr');
-                        if (row) {
-                            row.classList.add('bg-green-50'); // Highlight dengan warna hijau
-
-                            // Tambahkan animasi flash
-                            row.classList.add('flash-animation');
-                            setTimeout(() => {
-                                row.classList.remove('flash-animation');
-                            }, 1000);
-                        }
-                        // Disable checkbox setelah dicentang
-                        checkbox.disabled = true;
+                if (e.key === 'Enter') {
+                    if (kodeBarangScanned) {
+                        this.processItemValidation(kodeBarangScanned);
+                        kodeBarangScanned = '';
+                        clearTimeout(lastScannedTimeout);
                     }
+                } else {
+                    kodeBarangScanned += e.key;
+                    clearTimeout(lastScannedTimeout);
+                    lastScannedTimeout = setTimeout(() => {
+                        kodeBarangScanned = '';
+                    }, CONFIG.SCANNER_INPUT_TIMEOUT);
+                }
+            });
+        },
+        async processItemValidation(itemCode) {
+            try {
+                const response = await fetch(CONFIG.API_ENDPOINTS.VALIDATE_ITEM, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': Utils.getCsrfToken()
+                    },
+                    body: JSON.stringify({ itemCode: itemCode })
                 });
-            } else {
-                // Jika validasi gagal, tampilkan pesan kesalahan
-                alert(data.message || 'Validasi item gagal.');
+
+                const data = await response.json();
+                if (data.success) {
+                    this.highlightValidatedItem(itemCode);
+                } else {
+                    Utils.showAlert(data.message || 'Validasi item gagal.');
+                }
+            } catch (error) {
+                Utils.logError(error);
+                Utils.showAlert('Terjadi kesalahan saat memvalidasi item');
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat memvalidasi item');
+        },
+        highlightValidatedItem(itemCode) {
+            const checkboxes = document.querySelectorAll('[data-code]');
+
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.getAttribute('data-code') === itemCode) {
+                    checkbox.checked = true;
+                    const row = checkbox.closest('tr');
+
+                    if (row) {
+                        row.classList.add('bg-green-50');
+                        this.flashRowAnimation(row);
+                    }
+
+                    checkbox.disabled = true;
+                }
+            });
+        },
+        flashRowAnimation(row) {
+            row.classList.add('flash-animation');
+            setTimeout(() => {
+                row.classList.remove('flash-animation');
+            }, CONFIG.ANIMATION_DURATION);
+        }
+    },
+
+    returnSubmissionHandler: {
+        init() {
+            const savePengembalianButton = document.getElementById("savePengembalian");
+
+            savePengembalianButton.addEventListener("click", () => {
+                this.prepareAndSubmitReturnData();
+            });
+        },
+        prepareAndSubmitReturnData() {
+            const dataToSubmit = this.collectReturnData();
+            this.hideSaveModal();
+            this.submitReturnData(dataToSubmit);
+        },
+        collectReturnData() {
+            const rows = document.querySelectorAll("tr");
+            return Array.from(rows)
+                .map(row => {
+                    const uuidInput = row.querySelector(".item-uuid");
+                    const codeInput = row.querySelector(".item-code");
+                    const conditionDropdown = row.querySelector("#item-conditions");
+                    const checkbox = row.querySelector("[type='checkbox']");
+
+                    if (uuidInput && conditionDropdown && checkbox) {
+                        return {
+                            item_uuid: uuidInput.value,
+                            item_code: codeInput.value,
+                            condition: conditionDropdown.value,
+                            isChecked: checkbox.checked
+                        };
+                    }
+                    return null;
+                })
+                .filter(item => item !== null);
+        },
+        hideSaveModal() {
+            const saveModal = document.getElementById('save-modal');
+            saveModal.classList.add('hidden');
+        },
+        async submitReturnData(data) {
+            try {
+                const response = await fetch(CONFIG.API_ENDPOINTS.STORE_RETURN, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": Utils.getCsrfToken(),
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                this.handleSubmissionResponse(result);
+            } catch (error) {
+                Utils.logError(error);
+                Utils.showAlert("Terjadi kesalahan saat mengirim data.");
+            }
+        },
+        handleSubmissionResponse(data) {
+            console.log("Response:", data);
+            const successModal = document.getElementById('successModal');
+            successModal.classList.remove('hidden');
+            successModal.classList.add('visible');
+
+            // Optional: Uncomment to auto-redirect after submission
+            this.redirectToReport();
+        },
+        redirectToReport() {
+            window.location.href = '{{ route("user.pengembalian.report") }}';
         }
     }
-    document.addEventListener("DOMContentLoaded", function () {
-    const savePengembalianButton = document.getElementById("savePengembalian");
+};
 
-    savePengembalianButton.addEventListener("click", function () {
-        const rows = document.querySelectorAll("tr"); // Pilih semua baris tabel
-        const dataToSubmit = [];
+document.addEventListener("DOMContentLoaded", () => {
+    // Initialize scan handler
+    ReturnItemManager.scanHandler.init();
 
-        // Loop melalui setiap baris tabel
-        rows.forEach((row) => {
-            const uuidInput = row.querySelector(".item-uuid"); // Ambil UUID dari input hidden
-            const conditionDropdown = row.querySelector("#item-conditions"); // Dropdown kondisi
-            const checkbox = row.querySelector("[type='checkbox']"); // Checkbox
-
-            if (uuidInput && conditionDropdown && checkbox) {
-                const item_uuid = uuidInput.value; // Ambil nilai UUID
-                const condition = conditionDropdown.value; // Ambil nilai kondisi
-                const isChecked = checkbox.checked; // Ambil status checkbox
-
-                // Masukkan ke dalam array data yang akan dikirim
-                dataToSubmit.push({
-                    item_uuid,
-                    condition,
-                    isChecked,
-                });
-            }
-        });
-
-        // Log hasil data
-        console.log("Data to be submitted:", dataToSubmit);
-
-        fetch("/user/pengembalian/store", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-            },
-            body: JSON.stringify(dataToSubmit),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Response:", data);
-            alert("Data berhasil dikirim!");
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("Terjadi kesalahan saat mengirim data.");
-        });
-    });
+    // Initialize return submission handler
+    ReturnItemManager.returnSubmissionHandler.init();
 });
 
 </script>
