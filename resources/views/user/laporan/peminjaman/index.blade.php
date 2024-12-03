@@ -146,7 +146,7 @@
     <div class="btn-group">
       <a href="{{ route('user.peminjaman.pdf') }}" type="button" class="btn">Download PDF</a>
       {{--      <button class="btn">Cetak</button> --}}
-      <a href="{{ route('options') }}" type="button" class="btn">Selesai</a>
+      <a href="{{ route('user.option') }}" type="button" class="btn">Selesai</a>
     </div>
   </div>
   <!-- Pastikan QRCode.js sudah disertakan sebelum skrip ini -->

@@ -162,7 +162,7 @@ class PengembalianController extends Controller
     public function report()
     {
         if(!session()->has('kodePengembalian')){
-            return redirect()->route('user.options');
+            return redirect()->route('user.option');
         }
         $kodePengembalian = session()->get('kodePengembalian');
         $detailPengembalian = DetailPengembalian::where('kode_pengembalian',$kodePengembalian)->get();
@@ -197,7 +197,6 @@ class PengembalianController extends Controller
                 }
             }
         }
-
         return view('user.laporan.pengembalian.index', compact('detailPengembalian', 'pengembalian','barangKembali', 'barangHilang'));
     }
 
