@@ -26,14 +26,13 @@
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <i class="fa-solid fa-file-lines text-gray-500 dark:text-gray-400"></i>
                             </div>
-                            <input type="text" id="nomor-surat"
-                                   class="w-full pl-10 p-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-70 dark:text-white"
-                                   placeholder="Masukkan Surat Tugas" required>
+                           <input type="text" id="nomor-surat"
+                           class="w-full pl-10 p-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-70 dark:text-white"
+                           placeholder="Masukkan Surat Tugas" required>
                         </div>
                     </form>
                 </div>
-                <div
-                    class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+                <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
                     <div class="flex items-center w-full space-x-3 md:w-auto">
                         <div id="date-range-picker" class="flex items-center">
                             <div class="relative">
@@ -44,7 +43,7 @@
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                     </svg>
                                 </div>
-                                <input id="tanggal-pinjam" type="date"
+                                <input id="tanggal-penggunaan" type="date"
                                        class="w-full pl-10 p-2 text-sm border-gray-300  rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                                        placeholder="Tanggal peminjaman"/>
                             </div>
@@ -137,7 +136,7 @@
 
         {{-- Delete Modal Confirmation --}}
         <div id="popup-modal" tabindex="-1"
-             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
             <div class="relative p-4 w-full max-w-md">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <button type="button"
@@ -160,7 +159,7 @@
                             Daftar?</h3>
                         <input type="hidden" id="modal-uuid">
                         <div class="flex justify-center space-x-2 mt-4">
-                            <button data-modal-hide="popup-modal" type="button" onclick="confirmDelete()"
+                            <button data-modal-hide="popup-modal" type="button" onclick="ModalHandler.confirmDelete()"
                                     class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                                 Ya
                             </button>
@@ -175,8 +174,7 @@
         </div>
 
         {{-- Save Modal Confirmation --}}
-        <div id="save-modal" tabindex="-1"
-             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
+        <div id="save-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full h-full">
             <div class="relative p-4 w-full max-w-md">
                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="p-4 md:p-5 text-center flex flex-col items-center">
@@ -193,9 +191,9 @@
                                 Simpan
                             </button>
                             <button data-modal-hide="save-modal" type="button"
-                                    class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                Tidak
-                            </button>
+                                        class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                    Tidak
+                                </button>
                         </div>
                     </div>
                 </div>
@@ -208,8 +206,7 @@
             <div class="relative p-4 w-full max-w-md bg-white rounded-lg shadow-md dark:bg-gray-800">
                 {{-- Modal content --}}
                 <div class="text-center">
-                    <div
-                        class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
+                    <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 p-2 flex items-center justify-center mx-auto mb-3.5">
                         <svg aria-hidden="true" class="w-8 h-8 text-green-500 dark:text-green-400" fill="currentColor"
                              viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -226,11 +223,12 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     {{-- button --}}
     <div class="flex justify-center space-x-2 mt-4">
-        <a href="/options">
+        <a href="{{ route('user.option') }}">
             <button type="button"
                     class="text-white bg-blue-900 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                 Kembali
@@ -241,16 +239,13 @@
             Simpan
         </button>
     </div>
-    {{-- Toast Success --}}
+{{-- Toast Success --}}
     <div id="toast-success-add"
          class="hidden items-center fixed bottom-9 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
          role="alert">
-        <div
-            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                 viewBox="0 0 20 20">
-                <path
-                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
             </svg>
             <span class="sr-only">Check icon</span>
         </div>
@@ -273,7 +268,7 @@
         <div class="ms-3 text-sm font-normal"></div>
     </div>
 
-    {{--    <!-- Toast -->--}}
+{{--    <!-- Toast -->--}}
     <div id="toast-danger-2"
          class="hidden items-center fixed top-14 right-5 w-full max-w-xs p-4 mb-4 border border-gray-400 text-gray-600 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
          role="alert">
@@ -299,234 +294,247 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const modalTriggers = document.querySelectorAll('[data-modal-toggle="popup-modal"]');
-            modalTriggers.forEach(trigger => {
-                trigger.addEventListener('click', function () {
-                    const uuid = this.getAttribute('data-uuid');
-                    document.getElementById('modal-uuid').value = uuid;
-                });
-            });
-        });
+    // Constants and Configuration
+        const CONFIG = {
+            API_ENDPOINTS: {
+                SCAN_ITEM: 'http://127.0.0.1:8000/user/peminjaman/scan',
+                REMOVE_ITEM: '/user/peminjaman/remove/',
+                STORE_LOAN: '/user/peminjaman/store'
+            },
+            TIMEOUT_DURATION: 1500,
+            SCANNER_INPUT_TIMEOUT: 100
+        };
 
-        function confirmDelete() {
-            const uuid = document.getElementById('modal-uuid').value;
-            removeItem(uuid); // Panggil fungsi delete dengan UUID
-        }
+        // Utility Functions
+        const Utils = {
+            getCsrfToken() {
+                return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            },
+            formatDate(date) {
+                return date.toISOString().split('T')[0];
+            },
+            showToast(toastId, message) {
+                const toast = document.getElementById(toastId);
+                toast.querySelector('.text-sm').textContent = message;
+                toast.style.display = 'flex';
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const datepickerInput = document.getElementById('datepicker');
-            // Initialize Flowbite's datepicker with minDate
-            const datepicker = new Datepicker(datepickerInput, {
-                minDate: new Date(), // Disable past dates
-                todayHighlight: true // Highlight today's date
-            });
-        });
-
-        // Scanner Input Program
-        document.addEventListener('DOMContentLoaded', function () {
-            let lastScanned = '';
-            let lastScannedTimeout;
-
-            document.addEventListener('keydown', function (e) {
-                if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
-
-                if (e.key === 'Enter') {
-                    if (lastScanned) {
-                        processBarcodeInput(lastScanned);
-                        lastScanned = '';
-                        clearTimeout(lastScannedTimeout);
-                    }
-                } else {
-                    lastScanned += e.key;
-                    clearTimeout(lastScannedTimeout);
-                    lastScannedTimeout = setTimeout(() => {
-                        lastScanned = '';
-                    }, 100);
-                }
-            });
-
-            function processBarcodeInput(qrcode) {
-                fetch('http://127.0.0.1:8000/user/peminjaman/scan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({qrcode})
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            addItemToTable(data.item);
-                            document.querySelector("#toast-success-add .text-sm").textContent = data.message; // Set success message
-                            document.getElementById("toast-success-add").style.display = "flex"; // Show success toast
-                            // console.log(data.message);
-                            setTimeout(() => {
-                                document.getElementById("toast-success").style.display = "none";
-                            }, 1000);
-                        } else {
-                            document.querySelector("#toast-warning .text-sm").textContent = data.message; // Set failure message
-                            document.getElementById("toast-warning").style.display = "flex"; // Show warning toast
-                            // console.log(data.message);
-                            setTimeout(() => {
-                                document.getElementById("toast-warning").style.display = "none";
-                            }, 1000);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, CONFIG.TIMEOUT_DURATION);
             }
+        };
 
-            // Menambahkan data yang di scan ke tabel & update penomoran
-            function addItemToTable(item) {
+        // Modal Handling
+        const ModalHandler = {
+            init() {
+                const modalTriggers = document.querySelectorAll('[data-modal-toggle="popup-modal"]');
+                modalTriggers.forEach(trigger => {
+                    trigger.addEventListener('click', () => {
+                        const uuid = trigger.getAttribute('data-uuid');
+                        document.getElementById('modal-uuid').value = uuid;
+                    });
+                });
+            },
+            confirmDelete() {
+                const uuid = document.getElementById('modal-uuid').value;
+                ItemManager.removeItem(uuid);
+            }
+        };
+
+        // Item Management
+        const ItemManager = {
+            addItemToTable(item) {
                 const tbody = document.querySelector('table tbody');
                 const rowCount = tbody.children.length + 1;
                 const tr = document.createElement('tr');
+
                 tr.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600';
                 tr.dataset.itemId = item.uuid;
-
                 tr.innerHTML = `
-            <td class="w-4 p-4">
-                <div class="flex items-center">
-                    <p>${rowCount}</p>
-                </div>
-            </td>
-            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                <div class="ps-2">
-                    <div class="text-base font-semibold">${item.name}</div>
-                </div>
-            </th>
-            <td class="px-6 py-4">
-                ${item.merk}
-            </td>
-            <td class="px-6 py-4">
-                <div class="flex items-center">
-                    ${item.serial_number}
-                </div>
-            </td>
-            <td class="px-6 py-4">
-                <a href="#" onclick="removeItem('${item.uuid}')" class="text-blue-600 dark:text-blue-500 hover:text-red-600 hover:underline">
-                    <i class="fa-regular fa-trash-can fa-lg ml-3"></i>
-                </a>
-            </td>
-        `;
+                    <td class="w-4 p-4">
+                        <div class="flex items-center">
+                            <p>${rowCount}</p>
+                        </div>
+                    </td>
+                    <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                        <div class="ps-2">
+                            <div class="text-base font-semibold">${item.name}</div>
+                        </div>
+                    </th>
+                    <td class="px-6 py-4">${item.merk}</td>
+                    <td class="px-6 py-4">${item.serial_number}</td>
+                    <td class="px-6 py-4">
+                        <a href="#" onclick="ItemManager.removeItem('${item.uuid}')" class="text-blue-600 dark:text-blue-500 hover:text-red-600 hover:underline">
+                            <i class="fa-regular fa-trash-can fa-lg ml-3"></i>
+                        </a>
+                    </td>
+                `;
 
                 tbody.appendChild(tr);
-            }
-        });
+                this.updateRowNumbers();
+            },
 
-        // Remove data barang ditabel scan
-        function removeItem(uuid) {
-            fetch(`/user/peminjaman/remove/${uuid}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
+            removeItem(uuid) {
+                fetch(`${CONFIG.API_ENDPOINTS.REMOVE_ITEM}${uuid}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': Utils.getCsrfToken()
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const tbody = document.querySelector('table tbody');
                         const row = tbody.querySelector(`tr[data-item-id="${uuid}"]`);
                         if (row) {
-                            tbody.removeChild(row); // Hapus baris dari tabel
-                            updateRowNumbers(); // Perbarui nomor urut
+                            tbody.removeChild(row);
+                            this.updateRowNumbers();
                         }
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
+                .catch(console.error);
+            },
+            updateRowNumbers() {
+                const tbody = document.querySelector('table tbody');
+                Array.from(tbody.children).forEach((row, index) => {
+                    row.querySelector('td p').textContent = index + 1;
                 });
-        }
-
-        // Store data peminjaman
-        async function savePeminjaman() {
-            // Ambil nilai dari input form
-            const suratTugas = document.getElementById('nomor-surat').value;
-            const tanggalPeminjaman = document.getElementById('tanggal-pinjam').value;
-            const tanggalPengembalian = document.getElementById('tanggal-kembali').value;
-            const peruntukanId = document.getElementById('peruntukan').value;
-
-            // Validasi input
-            if (!suratTugas || !tanggalPeminjaman || !tanggalPengembalian || !peruntukanId) {
-
-                document.querySelector("#toast-danger-2 .text-sm").textContent = data.message; // Set success message
-                document.getElementById("toast-danger-2").style.display = "flex"; // Show success toast
-                // console.log(data.message);
-                setTimeout(() => {
-                    document.getElementById("toast-danger-2").style.display = "none";
-                }, 1500);
-                return;
             }
-            try {
-                // Dapatkan CSRF token dari meta tag
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        };
 
-                // Buat payload
-                const data = {
-                    nomor_surat: suratTugas,
-                    peruntukan_id: peruntukanId,
-                    tanggal_peminjaman: tanggalPeminjaman,
-                    tanggal_kembali: tanggalPengembalian,
-                };
+        // Scanner Handler
+        const ScannerHandler = {
+            init() {
+                let lastScanned = '';
+                let lastScannedTimeout;
 
-                // Kirim data ke REST API
-                const response = await fetch('/user/peminjaman/store', {
+                document.addEventListener('keydown', (e) => {
+                    if (['Shift', 'Control', 'Alt'].includes(e.key)) return;
+
+                    if (e.key === 'Enter') {
+                        if (lastScanned) {
+                            this.processBarcodeInput(lastScanned);
+                            lastScanned = '';
+                            clearTimeout(lastScannedTimeout);
+                        }
+                    } else {
+                        lastScanned += e.key;
+                        clearTimeout(lastScannedTimeout);
+                        lastScannedTimeout = setTimeout(() => {
+                            lastScanned = '';
+                        }, CONFIG.SCANNER_INPUT_TIMEOUT);
+                    }
+                });
+            },
+            processBarcodeInput(qrcode) {
+                fetch(CONFIG.API_ENDPOINTS.SCAN_ITEM, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
+                        'X-CSRF-TOKEN': Utils.getCsrfToken()
                     },
-                    body: JSON.stringify(data),
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    const successModal = document.getElementById('successModal');
-                    successModal.classList.remove('hidden'); // Hapus kelas 'hidden' untuk menampilkan modal
-
-                    // Tombol "Selesai" dalam modal
-                    const selesaiButton = document.getElementById('successButton');
-                    selesaiButton.addEventListener('click', () => {
-                        window.location.href = '{{ route("user.peminjaman.laporan") }}'; // Redirect ke halaman laporan
-                    });
-                } else {
-                    document.querySelector("#toast-danger-2 .text-sm").textContent = data.message; // Set failure message
-                    document.getElementById("toast-danger-2").style.display = "flex"; // Show warning toast
-                    setTimeout(() => {
-                        document.getElementById("toast-danger-2").style.display = "none";
-                    }, 1500);
-                }
-            } catch (error) {
-                console.error('Error:', error);
+                    body: JSON.stringify({qrcode})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        ItemManager.addItemToTable(data.item);
+                        Utils.showToast('toast-success-add', data.message);
+                    } else {
+                        Utils.showToast('toast-warning', data.message);
+                    }
+                })
+                .catch(console.error);
             }
-        }
+        };
 
-        function formatDate(date) {
-            return date.toISOString().split('T')[0];
-        }
+        // Loan Management
+        const LoanManager = {
+            async savePeminjaman() {
+                const inputs = {
+                    suratTugas: document.getElementById('nomor-surat').value,
+                    tanggalPenggunaan: document.getElementById('tanggal-penggunaan').value,
+                    tanggalPengembalian: document.getElementById('tanggal-kembali').value,
+                    peruntukanId: document.getElementById('peruntukan').value
+                };
+                console.log(inputs);
+                // Validate inputs
+                if (Object.values(inputs).some(value => !value)) {
+                    Utils.showToast('toast-danger-2', 'Please fill all required fields');
+                    return;
+                }
 
-        document.getElementById('saveButton').addEventListener('click', function (e) {
-            e.preventDefault(); // Mencegah form submit default
-            savePeminjaman();
-        });
-        ocument.getElementById('tanggal-pinjam').addEventListener('change', function () {
-            const tanggalKembali = document.getElementById('tanggal-kembali');
-            tanggalKembali.min = this.value; // Set minimum tanggal kembali
-        });
+                try {
+                    const response = await fetch(CONFIG.API_ENDPOINTS.STORE_LOAN, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': Utils.getCsrfToken(),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            nomor_surat: inputs.suratTugas,
+                            peruntukan_id: inputs.peruntukanId,
+                            tanggal_penggunaan: inputs.tanggalPenggunaan,
+                            tanggal_kembali: inputs.tanggalPengembalian
+                        })
+                    });
 
-        // Initialize date inputs dengan tanggal minimal hari ini
-        document.addEventListener('DOMContentLoaded', function () {
-            const today = formatDate(new Date());
-            const tanggalPinjam = document.getElementById('tanggal-pinjam');
-            const tanggalKembali = document.getElementById('tanggal-kembali');
+                    const result = await response.json();
+                    if (result.success) {
+                        this.showSuccessModal();
+                    } else {
+                        Utils.showToast('toast-danger-2', result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            },
+            showSuccessModal() {
+                const successModal = document.getElementById('successModal');
+                successModal.classList.remove('hidden');
 
-            tanggalPinjam.min = today;
-            tanggalPinjam.value = today;
-            tanggalKembali.min = today;
+                const selesaiButton = document.getElementById('successButton');
+                selesaiButton.addEventListener('click', () => {
+                    window.location.href = '{{ route("user.peminjaman.report") }}';
+                });
+            },
+            initDateInputs() {
+                const today = Utils.formatDate(new Date());
+                const tanggalPinjam = document.getElementById('tanggal-penggunaan');
+                const tanggalKembali = document.getElementById('tanggal-kembali');
+
+                tanggalPinjam.min = today;
+                tanggalPinjam.value = today;
+                tanggalKembali.min = today;
+
+                // Add event listener for date change
+                tanggalPinjam.addEventListener('change', function () {
+                    tanggalKembali.min = this.value;
+                });
+            }
+        };
+
+        // Initialize on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            ModalHandler.init();
+            ScannerHandler.init();
+            LoanManager.initDateInputs();
+
+            // Bind save button
+            document.getElementById('saveButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                LoanManager.savePeminjaman();
+            });
+
+            // Optional: Datepicker initialization if Flowbite is used
+            const datepickerInput = document.getElementById('datepicker');
+            if (datepickerInput) {
+                new Datepicker(datepickerInput, {
+                    minDate: new Date(),
+                    todayHighlight: true
+                });
+            }
         });
     </script>
 @endsection

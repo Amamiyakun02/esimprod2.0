@@ -10,67 +10,67 @@
 </head>
 
 <style>
-    * {
-        font-family: "Calibri", sans-serif;
-    }
+  * {
+    font-family: "Calibri", sans-serif;
+  }
 
-    h4 {
-        margin: 0;
-    }
+  h4 {
+    margin: 0;
+  }
 
-    .w-full {
-        width: 100%;
-    }
+  .w-full {
+    width: 100%;
+  }
 
-    .w-half {
-        width: 50%;
-    }
+  .w-half {
+    width: 50%;
+  }
 
-    .margin-top {
-        margin-top: 1.25rem;
-    }
+  .margin-top {
+    margin-top: 1.25rem;
+  }
 
-    .footer {
-        font-size: 0.875rem;
-        padding: 1rem;
-        background-color: rgb(241 245 249);
-    }
+  .footer {
+    font-size: 0.875rem;
+    padding: 1rem;
+    background-color: rgb(241 245 249);
+  }
 
-    table {
-        width: 100%;
-        border-spacing: 0;
-    }
+  table {
+    width: 100%;
+    border-spacing: 0;
+  }
 
-    table.products {
-        font-size: 14px;
-    }
+  table.products {
+    font-size: 14px;
+  }
 
-    table.products tr {
-        background-color: rgb(96 165 250);
-    }
+  table.products tr {
+    background-color: rgb(96 165 250);
+  }
 
-    table.products th {
-        color: #ffffff;
-        padding: 0.5rem;
-    }
+  table.products th {
+    color: #ffffff;
+    padding: 0.5rem;
+  }
 
-    table tr.items {
-        background-color: rgb(241 245 249);
-    }
+  table tr.items {
+    background-color: rgb(241 245 249);
+  }
 
-    table tr.items td {
-        padding: 0.5rem;
-    }
+  table tr.items td {
+    padding: 0.5rem;
+  }
 
-    .content-border {
-        border: 1px solid #000;
-        padding: 1rem;
-        height: 100vh;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
+  .content-border {
+    border: 1px solid #000;
+    padding: 1rem;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 </style>
 
 <body>
@@ -106,7 +106,7 @@
                     <div>Sampai : {{ $peminjaman->tanggal_kembali  }}</div>
                 </td>
                 <td class="w-half">
-                    <div>QR Pengembalian : <img src="{{ public_path('storage/uploads/qr_codes/1730858608_qr.png') }}""
+                    <div>QR Pengembalian : <img src="{{ public_path('storage/uploads/qr_codes/1730858608_qr.png') }}"
                         alt="" width="50px">
                     </div>
                     <div>Kode : {{ $peminjaman->kode_peminjaman }}</div>
@@ -116,24 +116,26 @@
     </div>
 
     <div class="margin-top">
-        <table class="products" style="width: 100%;">
+        <table class="products" style="width: 100%; border-collapse: collapse;" border="1">
+        <tr>
+          <th style="text-align: left;">NO</th>
+          <th style="text-align: left;">Nama Barang</th>
+          <th style="text-align: left;">Merk</th>
+          <th style="text-align: left;">No. Seri</th>
+          <th style="text-align: left;">Checklist</th>
+        </tr>
+        {{-- looping data  --}}
+        {{-- @foreach  --}}
+        @foreach($barang as $index => $item)
             <tr>
-                <th style="text-align: left;">NO</th>
-                <th style="text-align: left;">Nama Barang</th>
-                <th style="text-align: left;">Merk</th>
-                <th style="text-align: left;">No. Seri</th>
-                <th style="text-align: left;">Checklist</th>
+                <td style="text-align: left;">{{ $index + 1 }}</td>
+                <td style="text-align: left;">{{ $item['nama_barang'] }}</td>
+                <td style="text-align: left;">{{ $item['merk'] }}</td>
+                <td style="text-align: left;">{{ $item['nomor_seri'] }}</td>
+                <td style="text-align: left;"></td>
             </tr>
-            @foreach($barang as $index => $item)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $item['nama_barang'] }}</td>
-                    <td>{{ $item['merk'] }}</td>
-                    <td>{{ $item['nomor_seri'] }}</td>
-                    <td></td>
-                </tr>
-            @endforeach
-        </table>
+        @endforeach
+      </table>
     </div>
 </div>
 </body>

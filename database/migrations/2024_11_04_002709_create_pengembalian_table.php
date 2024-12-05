@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('kode_pengembalian')->unique();
             $table->string('kode_peminjaman');
             $table->date('tanggal_kembali');
-            $table->string('petugas');
             $table->string('peminjam');
+            $table->string('status');
             $table->timestamps();
-
             $table->foreign('kode_peminjaman')->references('kode_peminjaman')->on('peminjaman')->onDelete('cascade');
         });
     }

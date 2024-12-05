@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('detail_pengembalian', function (Blueprint $table) {
             $table->id();
             $table->string('uuid');
-            $table->string('kode_detail_pengembalian')->unique();
             $table->string('kode_pengembalian');
             $table->string('kode_barang');
             $table->string('status');

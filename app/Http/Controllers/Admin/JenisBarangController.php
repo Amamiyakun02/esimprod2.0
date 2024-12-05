@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Barang;
 use App\Models\JenisBarang;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class JenisBarangController extends Controller
@@ -18,7 +19,7 @@ class JenisBarangController extends Controller
     {
         $data = [
             'title' => 'Jenis Barang',
-            'jenis_barang' => JenisBarang::simplePaginate(5),
+            'jenis_barang' => JenisBarang::paginate(5),
         ];
         return view('admin.jenis-barang.index', $data);
     }
@@ -34,12 +35,8 @@ class JenisBarangController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'kode_jenis_barang' => 'required|string|unique:jenis_barang,kode_jenis_barang',
             'jenis_barang' => 'required|string|unique:jenis_barang,jenis_barang',
         ], [
-            'kode_jenis_barang.required' => 'Kode Barang harus diisi',
-            'kode_jenis_barang.unique' => 'Kode Barang sudah ada',
-            'kode_jenis_barang.string' => 'Kode Barang harus berupa string',
             'jenis_barang.required' => 'Jenis Barang harus diisi',
             'jenis_barang.unique' => 'Jenis Barang sudah ada',
         ]);
@@ -49,8 +46,7 @@ class JenisBarangController extends Controller
         }
 
         JenisBarang::create([
-            'uuid' => Str::random(10),
-            'kode_jenis_barang' => $request->kode_jenis_barang,
+            'uuid' => Str::uuid(),
             'jenis_barang' => $request->jenis_barang,
         ]);
 
@@ -82,11 +78,8 @@ class JenisBarangController extends Controller
     public function update(Request $request, string $uuid)
     {
         $validator = Validator::make($request->all(), [
-            'kode_jenis_barang' => 'required|string',
             'jenis_barang' => 'required',
         ], [
-            'kode_jenis_barang.required' => 'Kode Barang harus diisi',
-            'kode_jenis_barang.string' => 'Kode Barang harus berupa string',
             'jenis_barang.required' => 'Jenis Barang harus diisi',
         ]);
 
@@ -106,9 +99,19 @@ class JenisBarangController extends Controller
      */
     public function destroy(string $uuid)
     {
-        JenisBarang::where('uuid', $uuid)->delete();
+        $jenisBarang = JenisBarang::where('uuid', $uuid)->first();
 
-        notify()->success('Data Berhasil Dihapus');
-        return redirect()->route('admin.jenis-barang.index');
+        if ($jenisBarang) {
+            $isRelate = Barang::where('jenis_barang_id', $jenisBarang->id)->first();
+
+            if ($isRelate) {
+                notify()->error('Jenis barang ini tidak dapat dihapus karena masih digunakan pada data barang lainnya.');
+                return redirect()->route('jenis-barang.index');
+            } else {
+                JenisBarang::where('uuid', $uuid)->delete();
+                notify()->success('Data Berhasil Dihapus');
+                return redirect()->route('jenis-barang.index');
+            }
+        }
     }
 }

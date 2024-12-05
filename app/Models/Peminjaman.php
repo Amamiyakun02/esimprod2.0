@@ -15,13 +15,15 @@ class Peminjaman extends Model
     protected $fillable = [
         'uuid',
         'kode_peminjaman',
+        'nomor_peminjaman',
         'peruntukan_id',
         'nomor_surat',
+        'tanggal_penggunaan',
         'tanggal_peminjaman',
         'tanggal_kembali',
         'peminjam',
-        'petugas',
-        'status',
+        'qr_code',
+        'status'
     ];
 
 //    public function detailPeminjaman(): BelongsTo

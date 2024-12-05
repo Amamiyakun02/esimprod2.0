@@ -21,8 +21,7 @@ class BarangController extends Controller
     {
         $data = [
             'title' => 'Barang',
-            'barang' => Barang::where('sisa_limit', '>', 0)->simplePaginate(5),
-            'count' => Barang::count()
+            'barang' => Barang::where('sisa_limit', '>', 0)->paginate(5),
         ];
 
         return view('admin.barang.index', $data);
@@ -50,7 +49,7 @@ class BarangController extends Controller
             'nama_barang' => 'required',
             'merk' => 'required',
             'nomor_seri' => 'required',
-            'jenis_barang_id' => 'required|exists:jenis_barang,kode_jenis_barang',
+            'jenis_barang_id' => 'required|exists:jenis_barang,id',
             'limit' => 'required|numeric',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
         ], [
@@ -76,15 +75,15 @@ class BarangController extends Controller
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
-            $randomName = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('uploads/foto_barang', $randomName, 'public');
-            $data['foto'] = $randomName;
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('uploads/foto_barang', $filename, 'public');
+            $data['foto'] = $filename;
         } else {
             $data['foto'] = 'default.jpg';
         }
 
         Barang::create([
-            'uuid' => Str::uuid(),
+            'uuid' => Str::random(16),
             'kode_barang' => $kode_barang,
             'nama_barang' => $request->nama_barang,
             'nomor_seri' => $request->nomor_seri,
@@ -138,7 +137,7 @@ class BarangController extends Controller
             'nama_barang' => 'required',
             'nomor_seri' => 'required',
             'merk' => 'required',
-            'jenis_barang_id' => 'required|exists:jenis_barang,kode_jenis_barang',
+            'jenis_barang_id' => 'required|exists:jenis_barang,id',
             'limit' => 'required|numeric',
             'sisa_limit' => 'required|numeric',
             'foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
@@ -162,15 +161,15 @@ class BarangController extends Controller
 
         $barang = Barang::where('uuid', $uuid)->firstOrFail();
 
-        $randomName = $barang->foto;
+        $filename = $barang->foto;
         if ($request->hasFile('foto')) {
             if ($barang->foto && $barang->foto !== 'default.jpg') {
                 Storage::disk('public')->delete('uploads/foto_barang/' . $barang->foto);
             }
 
             $file = $request->file('foto');
-            $randomName = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('uploads/foto_barang', $randomName, 'public');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('uploads/foto_barang', $filename, 'public');
         }
 
         $barang->update([
@@ -182,7 +181,7 @@ class BarangController extends Controller
             'limit' => $request->limit,
             'sisa_limit' => $request->sisa_limit,
             'deskripsi' => $request->deskripsi,
-            'foto' => $randomName,
+            'foto' => $filename,
         ]);
 
         notify()->success('Barang Berhasil Diupdate');
@@ -263,12 +262,12 @@ class BarangController extends Controller
         $barang = Barang::where('nama_barang', 'like', '%' . $search . '%')
             ->orWhereHas('jenisBarang', function ($q) use ($search) {
                 $q->where('jenis_barang', 'like', '%' . $search . '%');
-            })->simplePaginate(5);
+            })->paginate(5)
+            ->appends(['search' => $search]);
 
         $data = [
             'title' => 'Barang',
             'barang' => $barang,
-            'count' => Barang::count()
         ];
 
         return view('admin.barang.index', $data);
