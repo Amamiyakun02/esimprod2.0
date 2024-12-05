@@ -13,7 +13,6 @@ class DetailPengembalian extends Model
 //    protected $with = ['barang'];
     protected $fillable = [
         'uuid',
-        'kode_detail_pengembalian',
         'kode_pengembalian',
         'kode_barang',
         'status',

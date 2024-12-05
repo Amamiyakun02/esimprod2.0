@@ -187,17 +187,15 @@
           <td>{{ $item['merk'] }}</td>
           <td>{{ $item['nomor_seri'] }}</td>
           <td>
-              <input id="pengembalianCode" type="hidden" class="input-field" value="{{ $pengembalian->kode_pengembalian }}">
-              <input id="barangCode" type="hidden" class="input-field" value="{{ $item['kode_barang'] }}">
+              <input id="barangUUID" type="hidden" class="input-field" value="{{ $item['uuid'] }}">
               <input id="barangDesc"
                type="text"
                class="input-field"
                placeholder="Hayoo mana barangnya???"
                oninput="validateDescription(this)"
                oninvalid="this.setCustomValidity('Deskripsi barang harus diisi!')"
-               oninput="this.setCustomValidity('')"
                required>
-                <div class="invalid-feedback">Deskripsi barang tidak boleh kosong</div>
+{{--                <div class="invalid-feedback">Deskripsi barang tidak boleh kosong</div>--}}
           </td>
         </tr>
         @endforeach
@@ -211,24 +209,7 @@
   </div>
   <!-- Pastikan QRCode.js sudah disertakan sebelum skrip ini -->
   <script>
-      function validateDescription(input) {
-        if (input.value.trim() === '') {
-            input.classList.add('is-invalid');
-            input.setCustomValidity('Deskripsi barang harus diisi!');
-        } else {
-            input.classList.remove('is-invalid');
-            input.setCustomValidity('');
-        }
-      }
-      document.addEventListener('DOMContentLoaded', function() {
-        const descInputs = document.querySelectorAll('#barangDesc');
-        descInputs.forEach(input => {
-            input.addEventListener('blur', function() {
-                validateDescription(this);
-            });
-        });
-      });
-     document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         const printPdfButton = document.getElementById('printpdf');
         const clearButton = document.getElementById('clear');
         const rows = document.querySelectorAll('tr');
@@ -237,11 +218,56 @@
             lostItemsArray;
             constructor() {
                 this.lostItemsArray = [];
+                this.initializeValidation();
+            }
+
+            initializeValidation() {
+                rows.forEach(row => {
+                    const uuid = row.querySelector('#barangUUID');
+                    const barangDescInput = row.querySelector('#barangDesc');
+
+                    if (barangDescInput) {
+                        // Event listeners for validation
+                        barangDescInput.addEventListener('input', () => this.validateInput(barangDescInput));
+                        barangDescInput.addEventListener('blur', () => this.validateInput(barangDescInput));
+
+                        // Event listener for item addition
+                        barangDescInput.addEventListener('change', () => {
+                            if (this.validateInput(barangDescInput)) {
+                                const itemDescription = barangDescInput.value.trim();
+                                const lostItem = {
+                                    uuid: uuid.value,
+                                    description: itemDescription
+                                };
+
+                                this.addOrUpdateItem(lostItem);
+                                console.log('Data Barang Tak Kembali:', this.lostItemsArray);
+                            }
+                        });
+                    }
+                });
+            }
+
+            validateInput(input) {
+                const itemDescription = input.value.trim();
+                const isValid = itemDescription !== '';
+
+                // Toggle validation classes
+                input.classList.toggle('is-invalid', !isValid);
+
+                if (!isValid) {
+                    input.setCustomValidity('Deskripsi barang harus diisi!');
+                    input.reportValidity();
+                } else {
+                    input.setCustomValidity('');
+                }
+
+                return isValid;
             }
 
             addOrUpdateItem(item) {
                 const existingItemIndex = this.lostItemsArray.findIndex(
-                    existing => existing.kode_barang === item.kode_barang
+                    existing => existing.uuid === item.uuid
                 );
 
                 if (existingItemIndex !== -1) {
@@ -251,13 +277,26 @@
                 }
             }
 
+            validateAllInputs() {
+                let isValid = true;
+                rows.forEach(row => {
+                    const barangDescInput = row.querySelector('#barangDesc');
+                    if (barangDescInput) {
+                        if (!this.validateInput(barangDescInput)) {
+                            isValid = false;
+                        }
+                    }
+                });
+                return isValid;
+            }
+
             validateItems() {
                 if (this.lostItemsArray.length === 0) {
                     alert('Tidak ada barang hilang yang diinput!');
                     return false;
                 }
 
-                const invalidItems = this.lostItemsArray.filter(item => !item.deskripsi_barang);
+                const invalidItems = this.lostItemsArray.filter(item => !item.description);
                 if (invalidItems.length > 0) {
                     alert('Harap lengkapi deskripsi untuk semua barang!');
                     return false;
@@ -266,23 +305,45 @@
                 return true;
             }
 
-            async sendToAPI(route, successMessage) {
-                if (!this.validateItems()) return;
+            async sendToAPI(redirect_route) {
+                if (!this.validateAllInputs()) {
+                    return;
+                }
+
+                if (!this.validateItems()) {
+                    return;
+                }
 
                 try {
-                    const response = await fetch(route, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify(this.lostItemsArray)
-                    });
+                    const response = await fetch('update_desc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        barang: this.lostItemsArray
+                    }) // Mengonversi data ke JSON
+                });
 
-                    if (!response.ok) throw new Error('Gagal mengirim data');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-                    alert(successMessage);
-                    this.resetData();
+                // Tangkap respons dari server
+                const responseData = await response.json();
+                console.log('Response from server:', responseData);
+                if(response.ok) {
+                    if (redirect_route === 'printpdf') {
+                        // Redirect ke route 'user.pengembalian.pdf'
+                        window.location.href = "{{ route('user.pengembalian.pdf') }}";
+                    } else if (redirect_route === 'clear') {
+                        // Redirect ke route 'user.option'
+                        window.location.href = "{{ route('user.option') }}";
+                    }
+                }
+
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Terjadi kesalahan: ' + error.message);
@@ -292,7 +353,10 @@
             resetData() {
                 rows.forEach(row => {
                     const barangDescInput = row.querySelector('#barangDesc');
-                    if (barangDescInput) barangDescInput.value = '';
+                    if (barangDescInput) {
+                        barangDescInput.value = '';
+                        barangDescInput.classList.remove('is-invalid');
+                    }
                 });
                 this.lostItemsArray.length = 0;
             }
@@ -300,36 +364,17 @@
 
         const lostItemManager = new LostItemManager();
 
-        rows.forEach(row => {
-            const barangCodeInput = row.querySelector('#barangCode');
-            const pengembalianCodeInput = row.querySelector('#pengembalianCode');
-            const barangDescInput = row.querySelector('#barangDesc');
+        if (printPdfButton) {
+            printPdfButton.addEventListener('click', () =>
+                lostItemManager.sendToAPI('printpdf')
+            );
+        }
 
-            if (barangCodeInput && barangDescInput) {
-                barangDescInput.addEventListener('change', function() {
-                    const itemDescription = this.value.trim();
-
-                    this.classList.toggle('is-invalid', !itemDescription);
-                    if (!itemDescription) return;
-
-                    const lostItem = {
-                        kode_pengembalian: pengembalianCodeInput.value,
-                        kode_barang: barangCodeInput.value,
-                        deskripsi_barang: itemDescription
-                    };
-
-                    lostItemManager.addOrUpdateItem(lostItem);
-                    console.log('Data Barang Tak Kembali:', lostItemManager.lostItemsArray);
-                });
-            }
-        });
-        printPdfButton.addEventListener('click', () =>
-            lostItemManager.sendToAPI('{{ route("user.pengembalian.pdf") }}', 'PDF berhasil dicetak!')
-        );
-
-        clearButton.addEventListener('click', () =>
-            lostItemManager.sendToAPI('{{ route("user.option") }}', 'Data berhasil direset!')
-        );
+        if (clearButton) {
+            clearButton.addEventListener('click', () =>
+                lostItemManager.sendToAPI('clear')
+            );
+        }
     });
     </script>
 </body>

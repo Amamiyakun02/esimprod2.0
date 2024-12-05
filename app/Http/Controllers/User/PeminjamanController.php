@@ -108,15 +108,14 @@ class PeminjamanController extends Controller
                 'tanggal_peminjaman' => now(),
                 'tanggal_kembali' => $request->tanggal_kembali,
                 'qr_code' => null,
-                'peminjam' => auth()->user()->name ?? "reza", // Gunakan user yang terautentikasi
-                'status' => 'pending'
+                'peminjam' => auth()->user()->name ?? "Unknow", // Gunakan user yang terautentikasi
+                'status' => 'proses'
             ]);
 
             // Create borrowing details
             foreach ($borrowedItems as $item) {
                 DetailPeminjaman::create([
                     'uuid' => Str::uuid(),
-                    'kode_detail_peminjaman' => $borrowing->kode_peminjaman . $borrowTime . $item['kode_barang'],
                     'kode_peminjaman' => $borrowing->kode_peminjaman,
                     'kode_barang' => $item['kode_barang'],
 
@@ -232,7 +231,7 @@ class PeminjamanController extends Controller
         ];
 
         // Generate PDF
-        $pdf = Pdf::loadView('user.laporan.report', $data)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('user.laporan.peminjaman.report', $data)->setPaper('a4', 'landscape');
         return $pdf->stream('laporan-peminjaman-' . time() . '.pdf');
     }
 }

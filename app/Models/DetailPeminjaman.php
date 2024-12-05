@@ -15,7 +15,6 @@ class DetailPeminjaman extends Model
     protected $with = ['barang'];
     protected $fillable = [
         'uuid',
-        'kode_detail_peminjaman',
         'kode_peminjaman',
         'kode_barang',
     ];

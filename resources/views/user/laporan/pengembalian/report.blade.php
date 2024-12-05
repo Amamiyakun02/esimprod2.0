@@ -1,3 +1,5 @@
+@php use Carbon\Carbon; @endphp
+{{--    new--}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,12 +8,12 @@
   <meta name="viewport"
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Invoice</title>
+  <title>Laporan Pengembalian</title>
 </head>
 
 <style>
   * {
-    font-family: "Calibri", sans-serif;
+    font-family: "Times New Roman", sans-serif;
   }
 
   h4 {
@@ -49,6 +51,19 @@
     background-color: rgb(96 165 250);
   }
 
+  table.back tr {
+    background-color: orange;
+  }
+
+  table.back {
+    font-size: 14px
+  }
+
+  table.back th {
+    color: #ffffff;
+    padding: 0.5rem
+  }
+
   table.products th {
     color: #ffffff;
     padding: 0.5rem;
@@ -72,68 +87,103 @@
     justify-content: space-between;
   }
 </style>
-
 <body>
   <div class="content-border">
+    {{-- bagian atas dekat header surat --}}
     <table style="width: 100%;">
       <tr>
-        <td style="width: 50%;">
-          <div style="font-weight: bold; font-size: 30px;">Daftar Barang Pinjam</div>
-          <div style="font-size: 20px;">Nomor Peminjaman: 3526830510190</div>
-          <div>Tanggal Pinjam: 2021</div>
+        <td style="width: 33%;">
+          <div style="font-weight: bold; font-size: 20px;">Laporan Pengembalian Barang</div>
+          <div>Nomor Peminjaman: {{ $pengembalian->peminjaman->nomor_peminjaman }}</div>
+          <div>Kode Pengembalian: {{ $pengembalian->kode_pengembalian }} </div>
         </td>
-        <td style="width: 50%; text-align: right;">
+        <td style="width: 33%;">
+          <br>
+          <div>Waktu Peminjaman: {{ Carbon::parse($pengembalian->peminjaman->tanggal_peminjaman)->format('d F Y') }}</div>
+          <div>Waktu pengembalian: {{ Carbon::parse($pengembalian->tanggal_kembali)->format('d F Y') }} </div>
+        </td>
+        <td style="width: 33%; text-align: right;">
           <img src="{{ public_path('img/assets/esimprod_logo.png') }}" alt="Esimprod" width="100" />
           <div>Version 2.0</div>
         </td>
       </tr>
     </table>
+    {{-- endd --}}
 
 
+    {{-- data peminjaman --}}
     <div class="margin-top">
       <table class="w-full">
         <tr>
           <td class="w-half">
-            <div>Peminjam : {{ $peminjaman->peminjaman }}</div>
+            <div>Peminjam : {{ $pengembalian->peminjaman->peminjam }}</div>
             <div>NIP : 123456</div>
             <div>No. HP : 08123456789</div>
             <div>Jabatan : Technical Director</div>
           </td>
           <td class="w-half">
-            <div>Surat Tugas : {{ $peminjaman->nomor_surat }}</div>
-            <div>Peruntukan : {{ $peminjaman->peruntukan->peruntukan }}</div>
-            <div>Tgl. Penggunaan : {{ $peminjaman->tanggal_peminjaman }}</div>
-            <div>Sampai : {{ $peminjaman->tanggal_kembali  }}</div>
+            <div>Surat Tugas : {{ $pengembalian->peminjaman->nomor_surat }}</div>
+            <div>Peruntukan : {{$pengembalian->peminjaman->peruntukan->peruntukan }} </div>
+            <div>Tgl. Penggunaan : {{ Carbon::parse($pengembalian->peminjaman->tanggal_penggunaan)->format('d F Y') }} </div>
+            <div>Sampai :{{ Carbon::parse($pengembalian->peminjaman->tanggal_kembali)->format('d F Y') }}</div>
           </td>
           <td class="w-half">
-            <div>QR Pengembalian : <img src="{{ public_path('storage/uploads/qr_codes/1730858608_qr.png') }}""
+            <div>QR Pengembalian : <img src="{{ public_path('storage/uploads/qr_codes/1730858608_qr.png') }}"
                 alt="" width="50px"></div>
-            <div>Kode : {{ $peminjaman->kode_peminjaman }}</div>
+            <div>Kode : PMB014</div>
           </td>
         </tr>
       </table>
     </div>
+    {{-- end data peminjaman --}}
 
+    {{-- tabel barang kondisi kembali  --}}
     <div class="margin-top">
-      <table class="products" style="width: 100%;">
-        <tr>
-          <th style="text-align: left;">NO</th>
-          <th style="text-align: left;">Nama Barang</th>
-          <th style="text-align: left;">Merk</th>
-          <th style="text-align: left;">No. Seri</th>
-          <th style="text-align: left;">Checklist</th>
-        </tr>
-          @foreach($barang as $index => $item)
+      <table class="products" style="width: 100%; border-collapse: collapse;" border="1">
           <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $item['nama_barang'] }}</td>
-            <td>{{ $item['merk'] }}</td>
-            <td>{{ $item['nomor_seri'] }}</td>
-            <td></td>
+            <th style="text-align: left;">NO</th>
+            <th style="text-align: left;">Nama Barang</th>
+            <th style="text-align: left;">Merk</th>
+            <th style="text-align: left;">No. Seri</th>
+            <th style="text-align: left;">Kondisi</th>
+          </tr>
+          @foreach($barangKembali as $key => $item)
+          <tr class="items">
+            <td style="text-align: left;">{{ $key + 1 }}</td>
+            <td style="text-align: left;">{{ $item['nama_barang'] }}</td>
+            <td style="text-align: left;">{{ $item['merk'] }}</td>
+            <td style="text-align: left;">{{ $item['nomor_seri'] }}</td>
+            <td style="text-align: left;">{{ $item['kondisi'] }}</td>
           </tr>
           @endforeach
-      </table>
+    </table>
     </div>
+    {{-- end tabel barang kondisi kembali --}}
+
+
+    {{-- tabel barang tidak kembali --}}
+    <div class="margin-top">
+      <p>Barang Belum dikembalikan:</p>
+        <table class="back" style="width: 100%; border-collapse: collapse;" border="1">
+          <tr>
+            <th style="text-align: left;">NO</th>
+            <th style="text-align: left;">Nama Barang</th>
+            <th style="text-align: left;">Merk</th>
+            <th style="text-align: left;">No. Seri</th>
+            <th style="text-align: left;">Penjelasan</th>
+          </tr>
+            @foreach($barangHilang as $key => $item)
+          <tr class="items">
+            <td style="text-align: left;">{{ $key + 1 }}</td>
+            <td style="text-align: left;">{{ $item['nama_barang'] }}</td>
+            <td style="text-align: left;">{{ $item['merk'] }}</td>
+            <td style="text-align: left;">{{ $item['nomor_seri'] }}</td>
+            <td style="text-align: left;">{{ $item['deskripsi'] }}</td>
+          </tr>
+            @endforeach
+        </table>
+    </div>
+    {{-- end tabel barang tidak kembali --}}
   </div>
 </body>
 

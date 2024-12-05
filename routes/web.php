@@ -98,6 +98,6 @@ Route::prefix('user/pengembalian')->group(function () {
     Route::post('/validation', [PengembalianUser::class, 'validateItem'])->name('user.pengembalian.validation');
     Route::post('/store', [PengembalianUser::class, 'store'])->name('user.pengembalian.store');
     Route::get('/report', [PengembalianUser::class, 'report'])->name('user.pengembalian.report');
-    Route::put('/update_desc', [PengembalianUser::class, 'desc_update'])->name('user.pengembalian.update_desc');
-//    route::get('/pdf', [PengembalianUser::class, 'printReport'])->name('user.pengembalian.pdf');
+    Route::post('/update_desc', [PengembalianUser::class, 'desc_update'])->name('user.pengembalian.update_desc');
+    route::get('/pdf', [PengembalianUser::class, 'printReport'])->name('user.pengembalian.pdf');
 });
